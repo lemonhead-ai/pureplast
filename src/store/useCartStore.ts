@@ -1,63 +1,82 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 
-export type Product = {
+export interface CartProduct {
   id: string;
   name: string;
   price?: number;
   image: string;
-  isEngineered?: boolean;
-};
-
-export type CartItem = Product & { quantity: number };
-
-interface CartState {
-  buyNowCart: CartItem[];
-  quoteCart: CartItem[];
-  isDrawerOpen: boolean;
-  drawerTab: 'buy' | 'quote';
-  
-  addToBuyNow: (product: Product) => void;
-  removeFromBuyNow: (id: string) => void;
-  
-  addToQuote: (product: Product) => void;
-  removeFromQuote: (id: string) => void;
-  
-  openDrawer: (tab: 'buy' | 'quote') => void;
-  closeDrawer: () => void;
-  setDrawerTab: (tab: 'buy' | 'quote') => void;
+  isEngineered: boolean;
+  quantity: number;
+  sku?: string;
 }
 
-export const useCartStore = create<CartState>((set) => ({
-  buyNowCart: [],
-  quoteCart: [],
+type DrawerTab = "buy" | "quote";
+
+interface CartStore {
+  // Drawer state
+  isDrawerOpen: boolean;
+  drawerTab: DrawerTab;
+  openDrawer: (tab?: DrawerTab) => void;
+  closeDrawer: () => void;
+  setDrawerTab: (tab: DrawerTab) => void;
+
+  // Buy-now cart
+  buyNowCart: CartProduct[];
+  addToBuyNow: (product: Omit<CartProduct, "quantity">) => void;
+  removeFromBuyNow: (id: string) => void;
+  clearBuyNow: () => void;
+
+  // Quote list
+  quoteCart: CartProduct[];
+  addToQuote: (product: Omit<CartProduct, "quantity">) => void;
+  removeFromQuote: (id: string) => void;
+  clearQuote: () => void;
+}
+
+export const useCartStore = create<CartStore>((set) => ({
   isDrawerOpen: false,
-  drawerTab: 'buy',
-  
-  addToBuyNow: (product) => set((state) => {
-    const exists = state.buyNowCart.find(item => item.id === product.id);
-    if (exists) {
-      return { buyNowCart: state.buyNowCart.map(item => item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item) };
-    }
-    return { buyNowCart: [...state.buyNowCart, { ...product, quantity: 1 }], drawerTab: 'buy', isDrawerOpen: true };
-  }),
-  
-  removeFromBuyNow: (id) => set((state) => ({
-    buyNowCart: state.buyNowCart.filter(item => item.id !== id)
-  })),
-  
-  addToQuote: (product) => set((state) => {
-    const exists = state.quoteCart.find(item => item.id === product.id);
-    if (exists) {
-      return { quoteCart: state.quoteCart.map(item => item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item) };
-    }
-    return { quoteCart: [...state.quoteCart, { ...product, quantity: 1 }], drawerTab: 'quote', isDrawerOpen: true };
-  }),
-  
-  removeFromQuote: (id) => set((state) => ({
-    quoteCart: state.quoteCart.filter(item => item.id !== id)
-  })),
-  
-  openDrawer: (tab) => set({ isDrawerOpen: true, drawerTab: tab }),
+  drawerTab: "buy",
+
+  openDrawer: (tab = "buy") =>
+    set({ isDrawerOpen: true, drawerTab: tab }),
   closeDrawer: () => set({ isDrawerOpen: false }),
   setDrawerTab: (tab) => set({ drawerTab: tab }),
+
+  buyNowCart: [],
+  addToBuyNow: (product) =>
+    set((state) => {
+      const existing = state.buyNowCart.find((p) => p.id === product.id);
+      if (existing) {
+        return {
+          buyNowCart: state.buyNowCart.map((p) =>
+            p.id === product.id ? { ...p, quantity: p.quantity + 1 } : p
+          ),
+        };
+      }
+      return { buyNowCart: [...state.buyNowCart, { ...product, quantity: 1 }] };
+    }),
+  removeFromBuyNow: (id) =>
+    set((state) => ({
+      buyNowCart: state.buyNowCart.filter((p) => p.id !== id),
+    })),
+  clearBuyNow: () => set({ buyNowCart: [] }),
+
+  quoteCart: [],
+  addToQuote: (product) =>
+    set((state) => {
+      const existing = state.quoteCart.find((p) => p.id === product.id);
+      if (existing) {
+        return {
+          quoteCart: state.quoteCart.map((p) =>
+            p.id === product.id ? { ...p, quantity: p.quantity + 1 } : p
+          ),
+        };
+      }
+      return { quoteCart: [...state.quoteCart, { ...product, quantity: 1 }] };
+    }),
+  removeFromQuote: (id) =>
+    set((state) => ({
+      quoteCart: state.quoteCart.filter((p) => p.id !== id),
+    })),
+  clearQuote: () => set({ quoteCart: [] }),
 }));
