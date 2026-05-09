@@ -68,7 +68,7 @@ export default function Home() {
               Engineered for Africa. Built to last.
             </motion.div>
 
-            <h1 className="text-6xl md:text-7xl font-bold tracking-tighter leading-[1.05] mb-6 text-balance">
+            <h1 className="text-6xl md:text-7xl font-semibold tracking-tighter leading-[1.05] mb-6 text-balance">
               Industrial<br />
               Precision{" "}
               <span className="text-[#004C97]">Plastic</span><br />
@@ -123,7 +123,7 @@ export default function Home() {
             viewport={{ once: true }}
             className="mb-14"
           >
-            <h2 className="text-3xl font-bold tracking-tighter text-[#0B1215]">
+            <h2 className="text-3xl font-semibold tracking-tighter text-[#0B1215]">
               What we manufacture
             </h2>
             <p className="text-black/50 mt-2">
@@ -191,10 +191,10 @@ export default function Home() {
             className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-14"
           >
             <div>
-              <p className="text-xs font-bold tracking-[0.15em] uppercase text-[#004C97] mb-2">
+              <p className="text-xs font-semibold tracking-[0.15em] uppercase text-[#004C97] mb-2">
                 Handpicked
               </p>
-              <h2 className="text-3xl font-bold tracking-tighter text-[#0B1215]">
+              <h2 className="text-3xl font-semibold tracking-tighter text-[#0B1215]">
                 Featured Products
               </h2>
             </div>
@@ -221,10 +221,22 @@ export default function Home() {
                   className="group bg-white rounded-3xl border border-[#E5E5E5] overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
                 >
                   {/* Image zone */}
-                  <div className="aspect-[4/3] bg-[#F5F5F2] relative flex items-center justify-center">
-                    <span className="text-xs text-black/20 font-medium tracking-wide uppercase">
-                      {product.sku}
-                    </span>
+                  <div className="aspect-[4/3] bg-[#F5F5F2] relative flex items-center justify-center overflow-hidden">
+                    {product.image ? (
+                      /* ── Cloudinary image ── */
+                      <Image
+                        src={product.image}
+                        alt={product.name}
+                        fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    ) : (
+                      /* ── Placeholder until Cloudinary URL is added ── */
+                      <span className="text-xs text-black/20 font-medium tracking-wide uppercase">
+                        {product.sku}
+                      </span>
+                    )}
                     <div className="absolute top-3 left-3">
                       {product.isEngineered ? (
                         <span
@@ -279,11 +291,11 @@ export default function Home() {
             >
               <div className="flex items-center gap-2 mb-4">
                 <span className="w-2 h-2 rounded-full bg-[#108E2B] animate-pulse" />
-                <span className="text-xs font-bold tracking-[0.15em] uppercase text-white/40">
+                <span className="text-xs font-semibold tracking-[0.15em] uppercase text-white/40">
                   Custom Engineering
                 </span>
               </div>
-              <h2 className="text-4xl font-bold tracking-tighter text-white mb-5">
+              <h2 className="text-4xl font-semibold tracking-tighter text-white mb-5">
                 Need a part built<br />to specification?
               </h2>
               <p className="text-white/50 leading-relaxed mb-8 max-w-md">

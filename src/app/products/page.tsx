@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import { ShoppingCart, FileText, ChevronRight, Package } from "@geist-ui/icons";
 import { useCartStore } from "@/store/useCartStore";
 import { Button } from "@/components/ui/Button";
@@ -81,13 +82,24 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
     >
       {/* Image zone */}
       <div className="relative aspect-[4/3] bg-[#F5F5F2] overflow-hidden">
-        {/* Placeholder — swap for <Image> when you have real assets */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-black/20">
-          <Package size={40} />
-          <span className="text-xs font-medium tracking-wide uppercase">
-            {product.sku}
-          </span>
-        </div>
+        {product.image ? (
+          /* ── Cloudinary image (or any absolute URL) ── */
+          <Image
+            src={product.image}
+            alt={product.name}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
+            className="object-cover group-hover:scale-105 transition-transform duration-500"
+          />
+        ) : (
+          /* ── Placeholder shown until a Cloudinary URL is added ── */
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-black/20">
+            <Package size={40} />
+            <span className="text-xs font-medium tracking-wide uppercase">
+              {product.sku}
+            </span>
+          </div>
+        )}
 
         {/* Badge top-left */}
         <div className="absolute top-3 left-3 z-10">
@@ -377,9 +389,9 @@ function ProductsPageInner() {
               <div className="flex items-center gap-2 text-sm text-black/40 font-medium mb-3">
                 <span>PurePlast</span>
                 <ChevronRight size={14} />
-                <span className="text-[#004C97]">Product Catalog</span>
+                <span className="font-regular text-[#004C97]">Product Catalog</span>
               </div>
-              <h1 className="text-4xl md:text-5xl font-bold tracking-tighter text-[#0B1215]">
+              <h1 className="text-4xl md:text-5xl font-semibold tracking-tighter text-[#0B1215]">
                 {activeCategoryMeta ? (
                   <>
                     <span style={{ color: activeCategoryMeta.accentColor }}>
@@ -416,7 +428,7 @@ function ProductsPageInner() {
                 placeholder="Search products or SKU…"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full h-11 pl-10 pr-4 rounded-2xl bg-[#F5F5F2] border border-[#E5E5E5] text-sm placeholder:text-black/30 focus:outline-none focus:ring-2 focus:ring-[#004C97]/30 focus:border-[#004C97]/50 transition-all"
+                className="w-full h-11 pl-10 pr-4 rounded-3xl bg-[#F5F5F2] border border-[#E5E5E5] text-sm placeholder:text-black/30 focus:outline-none focus:ring-2 focus:ring-[#004C97]/30 focus:border-[#004C97]/50 transition-all"
               />
             </div>
           </motion.div>
@@ -468,7 +480,7 @@ function ProductsPageInner() {
                 </div>
                 <button
                   onClick={() => handleCategoryChange("engineered")}
-                  className="w-full py-2 bg-[#108E2B] hover:bg-[#108E2B]/90 text-white text-xs font-bold rounded-2xl transition-colors"
+                  className="py-1 bg-[#108E2B] hover:bg-white text-white hover:text-green-950 border-0 h-10 px-3 rounded-3xl transition-colors"
                 >
                   View Engineered Parts
                 </button>
@@ -541,32 +553,26 @@ function ProductsPageInner() {
                 initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="mt-12 rounded-3xl bg-[#0B1215] p-8 md:p-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6"
+                className="mt-8 rounded-3xl bg-[#0B1215] p-8 md:p-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6"
               >
                 <div>
-                  <div className="flex items-center gap-2 mb-3">
+                  <div className="flex items-center gap-1 mb-3">
                     <span className="w-2 h-2 rounded-full bg-[#108E2B] animate-pulse" />
-                    <span className="text-xs font-bold tracking-widest uppercase text-white/40">
+                    <span className="text-xs font-semibold tracking-widest uppercase text-white/40">
                       Custom Manufacturing
                     </span>
                   </div>
-                  <h3 className="text-2xl font-bold text-white tracking-tight">
+                  <h3 className="text-2xl font-semibold text-white tracking-tight">
                     Can&apos;t find what you need?
                   </h3>
                   <p className="text-white/50 text-sm mt-1 max-w-md">
                     We produce custom-engineered plastic components from your specifications. Request a quote and our engineering team will respond within 24 hours.
                   </p>
                 </div>
-                <div className="flex gap-3 flex-shrink-0">
-                  <Button
-                    onClick={() => handleCategoryChange("engineered")}
-                    className="bg-[#108E2B] hover:bg-[#108E2B]/90 text-white border-0 h-11 px-6"
-                  >
-                    View Engineered Parts
-                  </Button>
+                <div className="flex gap-2 flex-shrink-0">
                   <Button
                     variant="outline"
-                    className="border-white/20 text-white hover:bg-white/10 h-11 px-6 bg-transparent"
+                    className="border-white/20 text-white hover:bg-white hover:text-black h-11 px-3 bg-transparent"
                     onClick={() => (window.location.href = "/contact")}
                   >
                     Contact Us

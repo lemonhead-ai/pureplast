@@ -73,7 +73,7 @@ export const PRODUCTS: Product[] = [
     description:
       "Thick-walled, BPA-free plastic mug with an ergonomic handle. Ideal for hot and cold beverages. Available in assorted colours.",
     price: 120,
-    image: "",
+    image: "https://res.cloudinary.com/dfjwbc8i7/image/upload/v1778354600/mug_bxpon1.jpg",
     isEngineered: false,
     category: "household",
     sku: "PP-MUG-001",
@@ -98,7 +98,7 @@ export const PRODUCTS: Product[] = [
     description:
       "High-density polyethylene basin, 15-litre capacity. Smooth interior finish for easy cleaning. Comes in a range of vibrant colours.",
     price: 350,
-    image: "",
+    image: "https://res.cloudinary.com/dfjwbc8i7/image/upload/v1778355078/washbasin_ztmn5f.jpg",
     isEngineered: false,
     category: "household",
     sku: "PP-BAS-003",
@@ -223,9 +223,9 @@ export const PRODUCTS: Product[] = [
     id: "ls-003",
     name: "Laundry Basket – Oval 40L",
     description:
-      "Wide-mouth oval laundry basket with ventilated sides. Soft-touch handles for comfortable carrying.",
+      "Wide-mouth rectangle laundry basket with ventilated sides. Soft-touch handles for comfortable carrying.",
     price: 680,
-    image: "",
+    image: "https://res.cloudinary.com/dfjwbc8i7/image/upload/q_auto/f_auto/v1778355500/laundrybasket_mtrmbv.jpg",
     isEngineered: false,
     category: "laundry-storage",
     sku: "PP-LBK-003",
@@ -237,7 +237,7 @@ export const PRODUCTS: Product[] = [
     description:
       "Stackable square crate for storage or retail display. Ridged base for stability. Available in multiple colours.",
     price: 520,
-    image: "",
+    image: "https://res.cloudinary.com/dfjwbc8i7/image/upload/q_auto/f_auto/v1778355499/storagebin_cmgwe8.jpg",
     isEngineered: false,
     category: "laundry-storage",
     sku: "PP-CRT-004",
@@ -248,8 +248,8 @@ export const PRODUCTS: Product[] = [
     name: "Wastebasket / Dustbin – 10L",
     description:
       "Slim-profile wastebasket with a removable inner liner. Smooth finish for easy wiping.",
-    price: 240,
-    image: "",
+    price: 10,
+    image: "https://res.cloudinary.com/dfjwbc8i7/image/upload/q_auto/f_auto/v1778355715/wastebucket_b5wlh7.jpg",
     isEngineered: false,
     category: "laundry-storage",
     sku: "PP-DST-005",
@@ -263,7 +263,7 @@ export const PRODUCTS: Product[] = [
     description:
       "UV-stabilised, weather-resistant monobloc chair. Stackable up to 10 units. Rated for 120kg load.",
     price: 1800,
-    image: "",
+    image: "https://res.cloudinary.com/dfjwbc8i7/image/upload/q_auto/f_auto/v1778357437/monobloc_bysgen.jpg",
     isEngineered: false,
     category: "furniture",
     sku: "PP-CHR-001",
@@ -288,7 +288,7 @@ export const PRODUCTS: Product[] = [
     description:
       "Small, rounded stool for children aged 2–8. Smooth edges, non-toxic plastic, easy to wipe clean.",
     price: 480,
-    image: "",
+    image: "https://res.cloudinary.com/dfjwbc8i7/image/upload/q_auto/f_auto/v1778357437/childrenlowstool_e7tmnc.jpg",
     isEngineered: false,
     category: "furniture",
     sku: "PP-CST-003",
@@ -300,7 +300,7 @@ export const PRODUCTS: Product[] = [
     description:
       "Portable folding table with a UV-resistant top surface and collapsible legs. Great for outdoor events.",
     price: 5500,
-    image: "",
+    image: "https://res.cloudinary.com/dfjwbc8i7/image/upload/q_auto/f_auto/v1778357438/foldingplastic_s6bhlx.jpg",
     isEngineered: false,
     category: "furniture",
     sku: "PP-TBL-004",
@@ -314,7 +314,7 @@ export const PRODUCTS: Product[] = [
     description:
       "Slim, strong plastic hanger with a 360° swivel hook. Space-saving design. Available in packs of 12.",
     price: 350,
-    image: "",
+    image: "https://res.cloudinary.com/dfjwbc8i7/image/upload/q_auto/f_auto/v1778355501/hangers_g0cdhm.jpg",
     isEngineered: false,
     category: "retail-hanging",
     sku: "PP-HNG-001",
@@ -339,7 +339,7 @@ export const PRODUCTS: Product[] = [
     description:
       "Spring-loaded clothes pegs with strong stainless steel springs. Rust-proof, UV-resistant casing.",
     price: 180,
-    image: "",
+    image: "https://res.cloudinary.com/dfjwbc8i7/image/upload/q_auto/f_auto/v1778357439/pegs_pebitg.jpg",
     isEngineered: false,
     category: "retail-hanging",
     sku: "PP-PEG-003",
@@ -351,7 +351,7 @@ export const PRODUCTS: Product[] = [
     description:
       "Hanging peg bag with a reinforced hanger hook. Wide opening for easy access. Mesh ventilated sides.",
     price: 220,
-    image: "",
+    image: "https://res.cloudinary.com/dfjwbc8i7/image/upload/q_auto/f_auto/v1778357438/pegholder_fixsqq.jpg",
     isEngineered: false,
     category: "retail-hanging",
     sku: "PP-PGB-004",
@@ -376,7 +376,7 @@ export const PRODUCTS: Product[] = [
     name: "Custom Injection-Moulded Housing",
     description:
       "Bespoke plastic housings for electronic or mechanical components. We work from your CAD files or sketches.",
-    image: "",
+    image: "https://res.cloudinary.com/dfjwbc8i7/image/upload/q_auto/f_auto/v1778357438/injectionmoulded_di0z1j.jpg",
     isEngineered: true,
     category: "engineered",
     sku: "PP-ENG-001",
@@ -397,7 +397,7 @@ export const PRODUCTS: Product[] = [
     name: "Custom Automotive Trim Panel",
     description:
       "Injection-moulded interior trim components. ABS and PP materials available. Fits to OEM specifications.",
-    image: "",
+    image: "https://res.cloudinary.com/dfjwbc8i7/image/upload/q_auto/f_auto/v1778357440/trimpanel_mbs8si.jpg",
     isEngineered: true,
     category: "engineered",
     sku: "PP-ENG-003",
@@ -407,7 +407,7 @@ export const PRODUCTS: Product[] = [
     name: "Agricultural Drip Emitter Body",
     description:
       "Precision plastic emitter components for drip irrigation systems. Tight dimensional tolerances, UV stabilised.",
-    image: "",
+    image: "https://res.cloudinary.com/dfjwbc8i7/image/upload/q_auto/f_auto/v1778357439/dripemitter_wkbkuj.jpg",
     isEngineered: true,
     category: "engineered",
     sku: "PP-ENG-004",
@@ -417,7 +417,7 @@ export const PRODUCTS: Product[] = [
     name: "Custom Packaging Trays",
     description:
       "Thermoformed or injection-moulded packaging trays in any shape. Food-safe materials available on request.",
-    image: "",
+    image: "https://res.cloudinary.com/dfjwbc8i7/image/upload/q_auto/f_auto/v1778357438/packagingtray_dneqei.jpg",
     isEngineered: true,
     category: "engineered",
     sku: "PP-ENG-005",

@@ -13,9 +13,9 @@ export default function Partners() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center max-w-2xl mx-auto mb-20"
         >
-          <h1 className="text-5xl font-bold tracking-tighter mb-6">Our Partners</h1>
+          <h1 className="text-5xl font-semibold tracking-tighter mb-6">Our Partners</h1>
           <p className="text-lg text-black/70">
-            We collaborate with industry leaders to deliver the best raw materials, technologies, and distribution channels for our engineered products.
+            We collaborate with industry leaders to deliver the best plastic materials, new innovations, and distribution channels for our engineered products.
           </p>
         </motion.div>
 
@@ -42,7 +42,7 @@ export default function Partners() {
           transition={{ delay: 0.6 }}
           className="mt-32 p-12 bg-[#0B1215] rounded-3xl text-center text-white"
         >
-          <h2 className="text-3xl font-bold tracking-tighter mb-6">Become a Partner</h2>
+          <h2 className="text-3xl font-semibold tracking-tighter mb-6">Become a Partner</h2>
           <p className="text-white/70 max-w-xl mx-auto mb-8">
             Are you a supplier, distributor, or technology provider? We are always looking for strategic partnerships to expand our capabilities.
           </p>
