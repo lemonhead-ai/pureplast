@@ -86,6 +86,8 @@ export default function ProductDetailPage() {
   const [added, setAdded] = useState(false);
 
   function handleAdd() {
+    if (!product) return;
+    
     if (product.isEngineered) {
       addToQuote(product);
       openDrawer("quote");

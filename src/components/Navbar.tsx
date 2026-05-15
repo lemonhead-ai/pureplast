@@ -97,7 +97,7 @@ export function Navbar() {
           </Link>
 
           {/* Desktop nav */}
-          <div className="hidden md:flex items-center gap-6 text-lg font-light">
+          <div className="hidden md:flex items-center gap-4 text-lg font-medium">
             {NAV_LINKS.map(({ href, label }) => {
               const active = isActive(href);
               return (

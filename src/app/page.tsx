@@ -218,10 +218,10 @@ export default function Home() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.08 }}
-                  className="group bg-white rounded-3xl border border-[#E5E5E5] overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+                  className="group flex flex-col bg-white rounded-3xl border border-[#E5E5E5] overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
                 >
                   {/* Image zone */}
-                  <div className="aspect-[4/3] bg-[#F5F5F2] relative flex items-center justify-center overflow-hidden">
+                  <div className="aspect-[4/3] bg-white relative flex items-center justify-center overflow-hidden border-b border-[#F0F0EE]">
                     {product.image ? (
                       /* ── Cloudinary image ── */
                       <Image
@@ -229,7 +229,7 @@ export default function Home() {
                         alt={product.name}
                         fill
                         sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
-                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        className="object-contain group-hover:scale-105 transition-transform duration-500 p-2"
                       />
                     ) : (
                       /* ── Placeholder until Cloudinary URL is added ── */
@@ -248,16 +248,20 @@ export default function Home() {
                         >
                           Quote Only
                         </span>
-                      ) : (
-                        <span className="px-2.5 py-1 text-[10px] font-bold tracking-widest uppercase rounded-full bg-white/80 text-black/50 border border-black/10">
+                      ) : product.inStock !== false ? (
+                        <span className="px-2.5 py-1 text-[10px] font-bold tracking-widest uppercase rounded-full bg-[#108E2B]/10 backdrop-blur text-[#108E2B] border border-[#108E2B]/20">
                           In Stock
+                        </span>
+                      ) : (
+                        <span className="px-2.5 py-1 text-[10px] font-bold tracking-widest uppercase rounded-full bg-red-500/90 backdrop-blur text-white border border-red-500">
+                          Out of Stock
                         </span>
                       )}
                     </div>
                   </div>
 
-                  <div className="p-5">
-                    <div className="flex items-center gap-1.5 mb-2">
+                  <div className="flex flex-col flex-1 p-4 gap-2">
+                    <div className="flex items-center gap-1.5">
                       <div
                         className="w-1.5 h-1.5 rounded-full"
                         style={{ background: cat?.accentColor }}
@@ -266,12 +270,24 @@ export default function Home() {
                         {cat?.label}
                       </span>
                     </div>
-                    <h3 className="font-semibold text-[15px] text-[#0B1215] mb-1">
+                    <h3 className="font-semibold text-[15px] text-[#0B1215]">
                       {product.name}
                     </h3>
-                    <p className="text-xs text-black/45 line-clamp-3 leading-relaxed">
+                    <p className="text-xs text-black/45 line-clamp-2 leading-relaxed">
                       {product.description}
                     </p>
+
+                    <div className="mt-auto pt-2">
+                      {!product.isEngineered ? (
+                        product.unit && (
+                          <p className="text-xs font-medium text-black/70">
+                            {product.unit}
+                          </p>
+                        )
+                      ) : (
+                        <p className="text-sm font-regular text-red-500">Quote Required</p>
+                      )}
+                    </div>
                   </div>
                 </motion.div>
               );

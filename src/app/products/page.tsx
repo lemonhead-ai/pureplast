@@ -4,7 +4,8 @@ import { useState, useRef, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { ShoppingCart, FileText, ChevronRight, Package } from "@geist-ui/icons";
+import Link from "next/link";
+import { ShoppingCart, FileText, ChevronRight, ChevronLeft, Package } from "@geist-ui/icons";
 import { useCartStore } from "@/store/useCartStore";
 import { Button } from "@/components/ui/Button";
 import {
@@ -82,15 +83,15 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
       className="group flex flex-col bg-white rounded-3xl border border-[#E5E5E5] overflow-hidden hover:shadow-2xl hover:shadow-black/8 hover:-translate-y-1 transition-all duration-300"
     >
       {/* Image zone */}
-      <div className="relative aspect-[4/3] bg-[#F5F5F2] overflow-hidden">
+      <div className="relative aspect-[4/3] bg-white overflow-hidden border-b border-[#F0F0EE]">
         {product.image ? (
           /* ── Cloudinary image (or any absolute URL) ── */
           <Image
             src={product.image}
             alt={product.name}
             fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
-            className="object-cover group-hover:scale-105 transition-transform duration-500"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+            className="object-contain group-hover:scale-105 transition-transform duration-500 p-2"
           />
         ) : (
           /* ── Placeholder shown until a Cloudinary URL is added ── */
@@ -115,9 +116,13 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
             >
               Quote Only
             </span>
-          ) : (
-            <span className="px-2.5 py-2 text-[10px] font-bold tracking-widest uppercase rounded-full bg-white/80 backdrop-blur text-black/60 border border-black/10">
+          ) : product.inStock !== false ? (
+            <span className="px-2.5 py-2 text-[10px] font-bold tracking-widest uppercase rounded-full bg-[#108E2B]/10 backdrop-blur text-[#108E2B] border border-[#108E2B]/20">
               In Stock
+            </span>
+          ) : (
+            <span className="px-2.5 py-2 text-[10px] font-bold tracking-widest uppercase rounded-full bg-red-500/90 backdrop-blur text-white border border-red-500">
+              Out of Stock
             </span>
           )}
         </div>
@@ -127,7 +132,7 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
       </div>
 
       {/* Content */}
-      <div className="flex flex-col flex-1 p-5 gap-3">
+      <div className="flex flex-col flex-1 p-4 gap-2">
         {/* Category tag */}
         <div className="flex items-center gap-1.5">
           <div
@@ -139,7 +144,7 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
           </span>
         </div>
 
-        <h3 className="font-semibold text-[15px] leading-snug text-[#0B1215] flex-1">
+        <h3 className="font-semibold text-[15px] leading-snug text-[#0B1215]">
           {product.name}
         </h3>
         <p className="text-xs text-black/50 leading-relaxed line-clamp-2">
@@ -147,15 +152,14 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
         </p>
 
         <div className="mt-auto pt-3 border-t border-[#F0F0EE] flex items-center justify-between gap-3">
-          {/* Price */}
+          {/* Status & Unit */}
           <div>
-            {product.price ? (
+            {!product.isEngineered ? (
               <>
-                <p className="text-lg font-bold text-[#0B1215]">
-                  KES {product.price.toLocaleString()}
-                </p>
                 {product.unit && (
-                  <p className="text-[10px] text-black/40 -mt-0.5">{product.unit}</p>
+                  <p className="text-xs font-medium text-black/70">
+                    {product.unit}
+                  </p>
                 )}
               </>
             ) : (
@@ -165,14 +169,17 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
 
           {/* CTA */}
           <button
-            onClick={handleAdd}
+            onClick={product.inStock !== false ? handleAdd : undefined}
+            disabled={product.inStock === false && !product.isEngineered}
             className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-2xl transition-all duration-200 whitespace-nowrap
               ${
                 added
                   ? "bg-[#108E2B] text-white scale-95"
                   : product.isEngineered
                   ? "bg-[#004C97]/10 text-[#004C97] hover:bg-[#004C97] hover:text-white"
-                  : "bg-[#0B1215]/8 text-[#0B1215] hover:bg-[#0B1215] hover:text-white"
+                  : product.inStock !== false
+                  ? "bg-[#0B1215]/8 text-[#0B1215] hover:bg-[#0B1215] hover:text-white"
+                  : "bg-black/5 text-black/30 cursor-not-allowed"
               }`}
           >
             {added ? (
@@ -183,7 +190,7 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
               </>
             ) : (
               <>
-                <ShoppingCart size={13} /> Add
+                <ShoppingCart size={13} /> Order Now
               </>
             )}
           </button>
@@ -198,40 +205,50 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
 function SidebarNav({
   active,
   onChange,
+  collapsed,
 }: {
   active: ProductCategory | "all";
   onChange: (c: ProductCategory | "all") => void;
+  collapsed: boolean;
 }) {
   const allCount = PRODUCTS.length;
 
+  const allIcon = (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-5 h-5 flex-shrink-0">
+      <rect x="3" y="3" width="7" height="7" rx="1"/>
+      <rect x="14" y="3" width="7" height="7" rx="1"/>
+      <rect x="3" y="14" width="7" height="7" rx="1"/>
+      <rect x="14" y="14" width="7" height="7" rx="1"/>
+    </svg>
+  );
+
   return (
     <nav className="flex flex-col gap-1">
+      {/* All Products */}
       <button
         onClick={() => onChange("all")}
-        className={`group flex items-center justify-between text-left px-4 py-3 rounded-2xl transition-all duration-200 ${
+        title={collapsed ? "All Products" : undefined}
+        className={`group flex items-center text-left rounded-2xl transition-all duration-200 ${
+          collapsed ? "justify-center px-0 py-3" : "justify-between px-4 py-3"
+        } ${
           active === "all"
             ? "bg-[#0B1215] text-white"
             : "hover:bg-black/5 text-[#0B1215]"
         }`}
       >
-        <div className="flex items-center gap-3">
-          <span className={`${active === "all" ? "text-white/60" : "text-black/40"}`}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-5 h-5">
-              <rect x="3" y="3" width="7" height="7" rx="1"/>
-              <rect x="14" y="3" width="7" height="7" rx="1"/>
-              <rect x="3" y="14" width="7" height="7" rx="1"/>
-              <rect x="14" y="14" width="7" height="7" rx="1"/>
-            </svg>
+        <div className={`flex items-center ${ collapsed ? "" : "gap-3" }`}>
+          <span className={`${ active === "all" ? "text-white/60" : "text-black/40" }`}>
+            {allIcon}
           </span>
-          <span className="font-semibold text-sm">All Products</span>
+          {!collapsed && <span className="font-semibold text-sm">All Products</span>}
         </div>
-        <span
-          className={`text-sm font-regular px-2 py-0.5 rounded-full ${
+        {!collapsed && (
+          <span className={`text-sm font-regular px-2 py-0.5 rounded-full ${
             active === "all" ? "bg-white/20 text-white" : "bg-black/8 text-black/50"
-          }`}
-        >
-          {allCount}
-        </span>
+          }`}>
+            {allCount}
+          </span>
+        )}
       </button>
 
       <div className="my-2 h-px bg-[#E5E5E5]" />
@@ -243,30 +260,27 @@ function SidebarNav({
           <button
             key={cat.id}
             onClick={() => onChange(cat.id)}
-            className={`group flex items-center justify-between text-left px-4 py-3 rounded-2xl transition-all duration-200 ${
-              isActive
-                ? "text-white"
-                : "hover:bg-black/5 text-[#0B1215]"
+            title={collapsed ? cat.label : undefined}
+            className={`group flex items-center text-left rounded-2xl transition-all duration-200 ${
+              collapsed ? "justify-center px-0 py-3" : "justify-between px-4 py-3"
+            } ${
+              isActive ? "text-white" : "hover:bg-black/5 text-[#0B1215]"
             }`}
             style={isActive ? { background: cat.accentColor } : {}}
           >
-            <div className="flex items-center gap-3">
-              <span
-                className={`transition-colors ${
-                  isActive ? "text-white/70" : "text-black/40"
-                }`}
-              >
+            <div className={`flex items-center ${ collapsed ? "" : "gap-3" }`}>
+              <span className={`transition-colors flex-shrink-0 ${ isActive ? "text-white/70" : "text-black/40" }`}>
                 {CATEGORY_ICONS[cat.id]}
               </span>
-              <span className="font-semibold text-sm leading-snug">{cat.label}</span>
+              {!collapsed && <span className="font-semibold text-sm leading-snug">{cat.label}</span>}
             </div>
-            <span
-              className={`text-xs font-bold px-2 py-0.5 rounded-full ${
+            {!collapsed && (
+              <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
                 isActive ? "bg-white/20 text-white" : "bg-black/8 text-black/50"
-              }`}
-            >
-              {count}
-            </span>
+              }`}>
+                {count}
+              </span>
+            )}
           </button>
         );
       })}
@@ -331,6 +345,7 @@ function ProductsPageInner() {
     "all"
   );
   const [search, setSearch] = useState("");
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const gridRef = useRef<HTMLDivElement>(null);
 
   // Sync ?category= URL param → active filter on first render
@@ -388,7 +403,7 @@ function ProductsPageInner() {
           >
             <div>
               <div className="flex items-center gap-2 text-sm text-black/40 font-regular mb-2">
-                <span>PurePlast</span>
+                <Link href="/" className="hover:text-[#004C97] transition-colors">PurePlast</Link>
                 <ChevronRight size={14} />
                 <span className="font-regular text-[#004C97]">Product Catalog</span>
               </div>
@@ -447,45 +462,64 @@ function ProductsPageInner() {
 
         <div className="flex gap-8 items-start">
           {/* ── Desktop Sidebar ─────────────────────────────────── */}
-          <aside className="hidden lg:block w-64 flex-shrink-0 sticky top-28">
-            <div className="bg-white rounded-3xl border border-[#E5E5E5] p-3">
-              <p className="text-[12px] font-semibold tracking-[0.15em] uppercase text-black/60 px-6 py-2">
-                Categories
-              </p>
+          <aside
+            className="hidden lg:block flex-shrink-0 sticky top-28 transition-all duration-300 ease-in-out"
+            style={{ width: sidebarCollapsed ? "56px" : "256px" }}
+          >
+            <div className="bg-white rounded-3xl border border-[#E5E5E5] p-3 overflow-hidden">
+              {/* Header row with collapse toggle */}
+              <div className={`flex items-center mb-1 ${ sidebarCollapsed ? "justify-center" : "justify-between px-3" }`}>
+                {!sidebarCollapsed && (
+                  <p className="text-[12px] font-semibold tracking-[0.15em] uppercase text-black/60 py-2">
+                    Categories
+                  </p>
+                )}
+                <button
+                  onClick={() => setSidebarCollapsed((v) => !v)}
+                  title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+                  className="w-8 h-8 flex items-center justify-center rounded-xl hover:bg-black/6 text-black/40 hover:text-black/70 transition-all duration-200 flex-shrink-0"
+                >
+                  {sidebarCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
+                </button>
+              </div>
+
               <SidebarNav
                 active={activeCategory}
                 onChange={handleCategoryChange}
+                collapsed={sidebarCollapsed}
               />
             </div>
 
-            {/* Engineered CTA card */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5 }}
-              className="mt-4 rounded-3xl overflow-hidden"
-              style={{ background: "#0B1215" }}
-            >
-              <div className="p-5 space-y-3">
-                <div className="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center text-white/60">
-                  {CATEGORY_ICONS["engineered"]}
+            {/* Engineered CTA card – hide when collapsed */}
+            {!sidebarCollapsed && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5 }}
+                className="mt-4 rounded-3xl overflow-hidden"
+                style={{ background: "#0B1215" }}
+              >
+                <div className="p-5 space-y-3">
+                  <div className="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center text-white/60">
+                    {CATEGORY_ICONS["engineered"]}
+                  </div>
+                  <div>
+                    <h4 className="text-white font-bold text-sm leading-tight">
+                      Need custom parts?
+                    </h4>
+                    <p className="text-white/50 text-xs mt-1 leading-relaxed">
+                      We manufacture to your exact specifications. Share your drawings or CAD files.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => handleCategoryChange("engineered")}
+                    className="py-1 bg-[#108E2B] hover:bg-white text-white hover:text-green-950 border-0 h-10 px-3 rounded-3xl transition-colors"
+                  >
+                    View Engineered Parts
+                  </button>
                 </div>
-                <div>
-                  <h4 className="text-white font-bold text-sm leading-tight">
-                    Need custom parts?
-                  </h4>
-                  <p className="text-white/50 text-xs mt-1 leading-relaxed">
-                    We manufacture to your exact specifications. Share your drawings or CAD files.
-                  </p>
-                </div>
-                <button
-                  onClick={() => handleCategoryChange("engineered")}
-                  className="py-1 bg-[#108E2B] hover:bg-white text-white hover:text-green-950 border-0 h-10 px-3 rounded-3xl transition-colors"
-                >
-                  View Engineered Parts
-                </button>
-              </div>
-            </motion.div>
+              </motion.div>
+            )}
           </aside>
 
           {/* ── Product Grid ─────────────────────────────────────── */}
@@ -538,7 +572,7 @@ function ProductsPageInner() {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.2 }}
-                  className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5"
+                  className={`grid grid-cols-1 sm:grid-cols-2 gap-5 transition-all duration-300 ${ sidebarCollapsed ? "lg:grid-cols-3 xl:grid-cols-4" : "xl:grid-cols-3" }`}
                 >
                   {filtered.map((product, i) => (
                     <ProductCard key={product.id} product={product} index={i} />
