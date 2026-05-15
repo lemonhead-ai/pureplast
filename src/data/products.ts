@@ -12,6 +12,7 @@ export interface Product {
   description: string;
   price?: number;
   image: string;
+  images?: string[];
   isEngineered: boolean;
   category: ProductCategory;
   sku: string;
@@ -200,6 +201,10 @@ export const PRODUCTS: Product[] = [
     name: "Tumbler (003)",
     description: "Standard plastic tumbler variant 003.",
     image: "https://res.cloudinary.com/dfjwbc8i7/image/upload/q_auto/f_auto/v1778851543/t4_ydlqsf.jpg",
+    images: [
+      "https://res.cloudinary.com/dfjwbc8i7/image/upload/q_auto/f_auto/v1778851543/t4_ydlqsf.jpg",
+      "https://res.cloudinary.com/dfjwbc8i7/image/upload/q_auto/f_auto/v1778851543/t3_wmu9dd.jpg",
+    ],
     isEngineered: false,
     category: "household",
     sku: "TUM-003",

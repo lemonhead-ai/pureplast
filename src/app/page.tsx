@@ -7,6 +7,7 @@ import { ArrowRight } from "@geist-ui/icons";
 import { CATEGORIES, FEATURED_PRODUCTS, getCategoryCount } from "@/data/products";
 import { useCartStore } from "@/store/useCartStore";
 import { Button } from "@/components/ui/Button";
+import { ProductCard } from "@/components/ProductCard";
 
 // ─── Stat strip ───────────────────────────────────────────────────────────────
 
@@ -210,87 +211,7 @@ export default function Home() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {FEATURED_PRODUCTS.slice(0, 6).map((product, i) => {
-              const cat = CATEGORIES.find((c) => c.id === product.category);
-              return (
-                <motion.div
-                  key={product.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.08 }}
-                  className="group flex flex-col bg-white rounded-3xl border border-[#E5E5E5] overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
-                >
-                  {/* Image zone */}
-                  <div className="aspect-[4/3] bg-white relative flex items-center justify-center overflow-hidden border-b border-[#F0F0EE]">
-                    {product.image ? (
-                      /* ── Cloudinary image ── */
-                      <Image
-                        src={product.image}
-                        alt={product.name}
-                        fill
-                        sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
-                        className="object-contain group-hover:scale-105 transition-transform duration-500 p-2"
-                      />
-                    ) : (
-                      /* ── Placeholder until Cloudinary URL is added ── */
-                      <span className="text-xs text-black/20 font-medium tracking-wide uppercase">
-                        {product.sku}
-                      </span>
-                    )}
-                    <div className="absolute top-3 left-3">
-                      {product.isEngineered ? (
-                        <span
-                          className="px-2.5 py-1 text-[10px] font-bold tracking-widest uppercase rounded-full"
-                          style={{
-                            background: `${cat?.accentColor}15`,
-                            color: cat?.accentColor,
-                          }}
-                        >
-                          Quote Only
-                        </span>
-                      ) : product.inStock !== false ? (
-                        <span className="px-2.5 py-1 text-[10px] font-bold tracking-widest uppercase rounded-full bg-[#108E2B]/10 backdrop-blur text-[#108E2B] border border-[#108E2B]/20">
-                          In Stock
-                        </span>
-                      ) : (
-                        <span className="px-2.5 py-1 text-[10px] font-bold tracking-widest uppercase rounded-full bg-red-500/90 backdrop-blur text-white border border-red-500">
-                          Out of Stock
-                        </span>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col flex-1 p-4 gap-2">
-                    <div className="flex items-center gap-1.5">
-                      <div
-                        className="w-1.5 h-1.5 rounded-full"
-                        style={{ background: cat?.accentColor }}
-                      />
-                      <span className="text-[10px] font-semibold uppercase tracking-widest text-black/40">
-                        {cat?.label}
-                      </span>
-                    </div>
-                    <h3 className="font-semibold text-[15px] text-[#0B1215]">
-                      {product.name}
-                    </h3>
-                    <p className="text-xs text-black/45 line-clamp-2 leading-relaxed">
-                      {product.description}
-                    </p>
-
-                    <div className="mt-auto pt-2">
-                      {!product.isEngineered ? (
-                        product.unit && (
-                          <p className="text-xs font-medium text-black/70">
-                            {product.unit}
-                          </p>
-                        )
-                      ) : (
-                        <p className="text-sm font-regular text-red-500">Quote Required</p>
-                      )}
-                    </div>
-                  </div>
-                </motion.div>
-              );
+              return <ProductCard key={product.id} product={product} index={i} showCTA={false} />;
             })}
           </div>
         </div>

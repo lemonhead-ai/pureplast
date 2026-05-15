@@ -42,9 +42,9 @@ function RelatedProducts({ current }: { current: Product }) {
             >
               <Link href={`/products/${product.id}`}>
                 <div className="group bg-white rounded-3xl border border-[#E5E5E5] overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                  <div className="aspect-[4/3] bg-[#F5F5F2] relative overflow-hidden">
+                  <div className="aspect-[4/3] bg-white relative overflow-hidden border-b border-[#F0F0EE]">
                     {product.image ? (
-                      <Image src={product.image} alt={product.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                      <Image src={product.image} alt={product.name} fill className="object-contain p-4 group-hover:scale-105 transition-transform duration-500" />
                     ) : (
                       <div className="absolute inset-0 flex items-center justify-center">
                         <Package size={32} className="text-black/20" />
@@ -84,6 +84,10 @@ export default function ProductDetailPage() {
   const category = CATEGORIES.find((c) => c.id === product.category);
   const { addToBuyNow, addToQuote, openDrawer } = useCartStore();
   const [added, setAdded] = useState(false);
+  const [currentImageIdx, setCurrentImageIdx] = useState(0);
+
+  const hasMultipleImages = product.images && product.images.length > 1;
+  const currentImage = hasMultipleImages ? product.images![currentImageIdx] : product.image;
 
   function handleAdd() {
     if (!product) return;
@@ -128,20 +132,21 @@ export default function ProductDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-start">
 
           {/* Image */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="relative aspect-square bg-[#F5F5F2] rounded-3xl overflow-hidden border border-[#E5E5E5]"
-          >
-            {product.image ? (
-              <Image
-                src={product.image}
-                alt={product.name}
-                fill
-                className="object-cover"
-                priority
-              />
-            ) : (
+          <div className="flex flex-col gap-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="relative aspect-square bg-white rounded-3xl overflow-hidden border border-[#E5E5E5]"
+            >
+              {currentImage ? (
+                <Image
+                  src={currentImage}
+                  alt={product.name}
+                  fill
+                  className="object-contain p-8"
+                  priority
+                />
+              ) : (
               <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-black/20">
                 <Package size={72} />
                 <span className="text-sm font-mono">{product.sku}</span>
@@ -168,6 +173,29 @@ export default function ProductDetailPage() {
               )}
             </div>
           </motion.div>
+
+          {/* Thumbnails */}
+          {hasMultipleImages && (
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="flex items-center gap-3 overflow-x-auto pb-2"
+            >
+              {product.images!.map((img, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setCurrentImageIdx(idx)}
+                  className={`relative w-20 h-20 bg-white rounded-xl overflow-hidden border-2 transition-all flex-shrink-0 ${
+                    idx === currentImageIdx ? "border-[#004C97]" : "border-transparent hover:border-black/10 opacity-70 hover:opacity-100"
+                  }`}
+                >
+                  <Image src={img} alt={`${product.name} thumbnail ${idx + 1}`} fill className="object-cover p-1" />
+                </button>
+              ))}
+            </motion.div>
+          )}
+          </div>
 
           {/* Info */}
           <motion.div
