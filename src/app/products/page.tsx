@@ -52,6 +52,7 @@ const CATEGORY_ICONS: Record<string, React.ReactNode> = {
   ),
 };
 
+
 // ─── Product Card ─────────────────────────────────────────────────────────────
 
 function ProductCard({ product, index }: { product: Product; index: number }) {
@@ -105,7 +106,7 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
         <div className="absolute top-3 left-3 z-10">
           {product.isEngineered ? (
             <span
-              className="px-2.5 py-1 text-[10px] font-bold tracking-widest uppercase rounded-full"
+              className="px-3.5 py-2 text-[10px] font-bold tracking-widest uppercase rounded-full"
               style={{
                 background: `${category?.accentColor}18`,
                 color: category?.accentColor,
@@ -115,7 +116,7 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
               Quote Only
             </span>
           ) : (
-            <span className="px-2.5 py-1 text-[10px] font-bold tracking-widest uppercase rounded-full bg-white/80 backdrop-blur text-black/60 border border-black/10">
+            <span className="px-2.5 py-2 text-[10px] font-bold tracking-widest uppercase rounded-full bg-white/80 backdrop-blur text-black/60 border border-black/10">
               In Stock
             </span>
           )}
@@ -158,7 +159,7 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
                 )}
               </>
             ) : (
-              <p className="text-sm font-semibold text-black/50">Quote Required</p>
+              <p className="text-sm font-regular text-red-500">Quote Required</p>
             )}
           </div>
 
@@ -225,7 +226,7 @@ function SidebarNav({
           <span className="font-semibold text-sm">All Products</span>
         </div>
         <span
-          className={`text-xs font-bold px-2 py-0.5 rounded-full ${
+          className={`text-sm font-regular px-2 py-0.5 rounded-full ${
             active === "all" ? "bg-white/20 text-white" : "bg-black/8 text-black/50"
           }`}
         >
@@ -386,7 +387,7 @@ function ProductsPageInner() {
             className="flex flex-col md:flex-row md:items-end justify-between gap-6"
           >
             <div>
-              <div className="flex items-center gap-2 text-sm text-black/40 font-medium mb-3">
+              <div className="flex items-center gap-2 text-sm text-black/40 font-regular mb-2">
                 <span>PurePlast</span>
                 <ChevronRight size={14} />
                 <span className="font-regular text-[#004C97]">Product Catalog</span>
@@ -397,8 +398,7 @@ function ProductsPageInner() {
                     <span style={{ color: activeCategoryMeta.accentColor }}>
                       {activeCategoryMeta.label}
                     </span>
-                    <br />
-                    <span className="text-[#0B1215]">Products</span>
+                    <span className="text-[#575859]"> Products</span>
                   </>
                 ) : (
                   "Product Catalog"
@@ -407,7 +407,7 @@ function ProductsPageInner() {
               <p className="mt-2 text-black/50 text-base max-w-lg">
                 {activeCategoryMeta
                   ? activeCategoryMeta.tagline
-                  : "Browse our complete range of precision-manufactured plastic products."}
+                  : "Browse our complete range of plastic products."}
               </p>
             </div>
 
@@ -425,7 +425,7 @@ function ProductsPageInner() {
               </svg>
               <input
                 type="text"
-                placeholder="Search products or SKU…"
+                placeholder="Search products..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="w-full h-11 pl-10 pr-4 rounded-3xl bg-[#F5F5F2] border border-[#E5E5E5] text-sm placeholder:text-black/30 focus:outline-none focus:ring-2 focus:ring-[#004C97]/30 focus:border-[#004C97]/50 transition-all"
@@ -449,7 +449,7 @@ function ProductsPageInner() {
           {/* ── Desktop Sidebar ─────────────────────────────────── */}
           <aside className="hidden lg:block w-64 flex-shrink-0 sticky top-28">
             <div className="bg-white rounded-3xl border border-[#E5E5E5] p-3">
-              <p className="text-[10px] font-bold tracking-[0.15em] uppercase text-black/30 px-4 py-2">
+              <p className="text-[12px] font-semibold tracking-[0.15em] uppercase text-black/60 px-6 py-2">
                 Categories
               </p>
               <SidebarNav
@@ -508,7 +508,7 @@ function ProductsPageInner() {
               {search && (
                 <button
                   onClick={() => setSearch("")}
-                  className="text-xs text-black/40 hover:text-black underline"
+                  className="text-sm text-black/40 hover:text-black underline"
                 >
                   Clear search
                 </button>

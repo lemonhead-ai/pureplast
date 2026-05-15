@@ -78,7 +78,7 @@ export function Navbar() {
           className="absolute bottom-0 left-0 right-0 h-px transition-opacity duration-200"
           style={{
             opacity: progress,
-            background: "linear-gradient(to right, transparent, rgba(0,0,0,0.08), transparent)",
+            background: "linear-gradient(to right, transparent, rgba(0,0,0,0), transparent)",
           }}
         />
 
@@ -91,20 +91,20 @@ export function Navbar() {
               alt="PurePlast Logo"
               width={150}
               height={144}
-              className="h-36 mt-4 w-auto object-contain"
+              className="h-36 mt-6 w-auto object-contain"
               priority
             />
           </Link>
 
           {/* Desktop nav */}
-          <div className="hidden md:flex items-center gap-8 text-lg font-medium">
+          <div className="hidden md:flex items-center gap-6 text-lg font-light">
             {NAV_LINKS.map(({ href, label }) => {
               const active = isActive(href);
               return (
                 <Link
                   key={href}
                   href={href}
-                  className={`relative pb-0.5 transition-colors ${
+                  className={`relative pb-0.5 transition-colors${
                     active ? "text-[#004C97]" : "hover:text-[#004C97]"
                   }`}
                 >
@@ -112,7 +112,7 @@ export function Navbar() {
                   {active && (
                     <motion.span
                       layoutId="nav-underline"
-                      className="absolute -bottom-1 left-0 right-0 h-0.5 rounded-full bg-[#004C97]"
+                      className="absolute -bottom-1  left-0 right-0 h-0.5 rounded-full bg-[#004C97]"
                       transition={{ type: "spring", bounce: 0.25, duration: 0.4 }}
                     />
                   )}
@@ -128,7 +128,7 @@ export function Navbar() {
               className="relative p-2 hover:bg-black/5 rounded-full transition-colors"
               aria-label="Cart and Quotes"
             >
-              <ShoppingCart size={20} />
+              <ShoppingCart size={24} />
               {totalItems > 0 && (
                 <span className="absolute top-0 right-0 bg-[#004C97] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full font-bold">
                   {totalItems}
