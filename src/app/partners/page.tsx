@@ -140,34 +140,34 @@ function PartnershipForm() {
     <form className="space-y-6" onSubmit={handleSubmit}>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <label className="text-sm font-semibold uppercase tracking-wider text-black/50 block">Company Name *</label>
-          <Input name="company" placeholder="Acme Distributors Ltd" required />
+          <label className="text-sm font-regular uppercase tracking-wider text-black/50 block">Company Name *</label>
+          <Input name="company" placeholder="" required />
         </div>
         <div className="space-y-2">
-          <label className="text-sm font-semibold uppercase tracking-wider text-black/50 block">Your Name *</label>
-          <Input name="name" placeholder="John Kamau" required />
+          <label className="text-sm font-regular uppercase tracking-wider text-black/50 block">Your Name *</label>
+          <Input name="name" placeholder="" required />
         </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <label className="text-sm font-semibold uppercase tracking-wider text-black/50 block">Email Address *</label>
-          <Input name="email" type="email" placeholder="john@company.co.ke" required />
+          <label className="text-sm font-regular uppercase tracking-wider text-black/50 block">Email Address *</label>
+          <Input name="email" type="email" placeholder="" required />
         </div>
         <div className="space-y-2">
-          <label className="text-sm font-semibold uppercase tracking-wider text-black/50 block">Phone</label>
+          <label className="text-sm font-regular uppercase tracking-wider text-black/50 block">Phone</label>
           <Input name="phone" type="tel" placeholder="+254 7XX XXX XXX" />
         </div>
       </div>
 
       <div className="space-y-2">
-        <label className="text-sm font-semibold uppercase tracking-wider text-black/50 block">Partnership Type *</label>
+        <label className="text-sm font-regular uppercase tracking-wider text-black/50 block">Partnership Type *</label>
         <select
           name="type"
           required
           className="flex h-12 w-full rounded-3xl border border-[#E5E5E5] bg-white px-4 py-2 text-base text-[#0B1215] focus:outline-none focus:ring-2 focus:ring-[#004C97]/30 focus:border-[#004C97]/50 transition-all"
         >
-          <option value="">Select partnership type…</option>
+          <option value="">Select type…</option>
           <option value="OEM Manufacturing">OEM Manufacturing Partner</option>
           <option value="Distribution">Distribution Partner</option>
           <option value="Raw Material Supply">Raw Material Supplier</option>
@@ -177,7 +177,7 @@ function PartnershipForm() {
       </div>
 
       <div className="space-y-2">
-        <label className="text-sm font-semibold uppercase tracking-wider text-black/50 block">
+        <label className="text-sm font-regular uppercase tracking-wider text-black/50 block">
           Tell us about your business &amp; what you need *
         </label>
         <textarea
@@ -232,9 +232,9 @@ export default function Partners() {
             <h1 className="text-3xl md:text-5xl font-semibold tracking-tighter text-[#0B1215] mb-5">
               Partners &amp; Partnerships
             </h1>
-            <p className="text-lg md:text-xl text-black/55 leading-relaxed max-w-2xl">
+            <p className="text-md md:text-lg text-black/55 leading-relaxed max-w-2xl">
               PurePlast builds long-term manufacturing relationships. We work with distributors, OEM clients, raw
-              material suppliers, and technology partners across East Africa.
+              material suppliers across East Africa.
             </p>
           </motion.div>
         </div>
@@ -377,7 +377,7 @@ export default function Partners() {
               </div>
 
               <div className="mt-10 pt-8 border-t border-[#E5E5E5]">
-                <p className="text-sm text-black/40 mb-4 uppercase tracking-widest font-semibold">Or reach us directly</p>
+                <p className="text-md text-black/60 mb-4 uppercase tracking-widest font-regular">Or reach us directly</p>
                 <Link href="/contact">
                   <Button
                     variant="outline"
@@ -397,7 +397,7 @@ export default function Partners() {
               transition={{ delay: 0.1 }}
               className="lg:col-span-3 bg-white rounded-3xl border border-[#E5E5E5] p-8 md:p-10"
             >
-              <h3 className="text-2xl font-semibold text-[#0B1215] mb-1">Partnership Enquiry</h3>
+              <h3 className="text-2xl font-semibold text-[#0B1215] mb-3">Partnership Enquiry</h3>
               <PartnershipForm />
             </motion.div>
           </div>

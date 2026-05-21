@@ -38,7 +38,7 @@ export default function Home() {
     <div className="flex flex-col">
 
       {/* ── HERO ──────────────────────────────────────────────────────────────── */}
-      <section className="relative h-[92vh] min-h-[640px] flex items-center justify-center overflow-hidden">
+      <section className="relative h-[92vh] cmin-h-[640px] flex items-center justify-center overflow-hidden">
         {/* Background image */}
         <div className="absolute inset-0 z-0">
           <Image

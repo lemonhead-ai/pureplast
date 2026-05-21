@@ -19,19 +19,18 @@ export default function NotFound() {
             </span>
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
               <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#108E2B] animate-pulse" />
-                <span className="text-sm font-bold uppercase tracking-widest text-[#108E2B]">
+                <span className="text-sm font-bold uppercase tracking-widest text-red-600">
                   Page Not Found
                 </span>
               </div>
               <h1 className="text-3xl md:text-4xl font-semibold tracking-tighter text-[#0B1215] leading-snug px-4">
-                This page doesn&apos;t<br />exist in our catalogue.
+                This page isn&apos;t<br /> live yet, Check back soon  :)
               </h1>
             </div>
           </div>
 
           <p className="text-base md:text-lg text-black/50 leading-relaxed mb-10 max-w-md mx-auto">
-            You may have followed a broken link or typed the wrong address.
+            You may have followed a forbidden link or typed the wrong address.
             Let&apos;s get you back to something useful.
           </p>
 

@@ -12,7 +12,7 @@ import { Button } from "./ui/Button";
 const NAV_LINKS = [
   { href: "/", label: "Home" },
   { href: "/products", label: "Products" },
-  {href: "/3Dprinting", label: "3D Printing" },
+  {href: "/not-found", label: "3D Printing" },
   { href: "/about", label: "About Us" },
   { href: "/partners", label: "Our Partners" },
   { href: "/contact", label: "Contact Us" },
@@ -68,7 +68,7 @@ export function Navbar() {
             backdropFilter: `blur(${blur}px)`,
             WebkitBackdropFilter: `blur(${blur}px)`,
             backgroundColor: `rgba(255,255,255,${bgOpacity})`,
-            maskImage: "linear-gradient(to bottom, black 30%, black 40%, transparent)",
+            maskImage: "linear-gradient(to bottom, black 25%, black 45%, transparent)",
             WebkitMaskImage: "linear-gradient(to bottom, black 30%, black 40%, transparent)",
           }}
         />
@@ -78,7 +78,7 @@ export function Navbar() {
           className="absolute bottom-0 left-0 right-0 h-px transition-opacity duration-200"
           style={{
             opacity: progress,
-            background: "linear-gradient(to right, transparent, rgba(0,0,0,0), transparent)",
+            background: "linear-gradient(to right, transparent, rgba(0,0,0,0, transparent)",
           }}
         />
 

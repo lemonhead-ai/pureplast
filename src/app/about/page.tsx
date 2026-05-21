@@ -9,8 +9,8 @@ import { Button } from "@/components/ui/Button";
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
 const STATS = [
-  { value: "15+", label: "Years manufacturing" },
-  { value: "30+", label: "Product lines" },
+  { value: "2+", label: "Years manufacturing" },
+  { value: "10+", label: "Product lines" },
   { value: "6", label: "Product categories" },
   { value: "48h", label: "Custom quote turnaround" },
 ];
@@ -18,31 +18,31 @@ const STATS = [
 const CORE_VALUES = [
   {
     label: "Precision Engineering",
-    detail: "Exact dimensional tolerances — every batch, every mould.",
+    detail: "Exact dimensional tolerances.",
     color: "#004C97",
     bg: "#004C97",
   },
   {
     label: "Long-Term Partnerships",
-    detail: "Custom tooling, branded moulds, and exclusive formulations — investments we make together.",
+    detail: "Custom tooling, branded moulds, and exclusive formulations.",
     color: "#108E2B",
     bg: "#108E2B",
   },
   {
     label: "Local Manufacturing",
-    detail: "Designed, moulded, and finished at our Kitengela facility. No import delays.",
+    detail: "Designed, moulded, and finished at our local facility. Made in Kenya.",
     color: "#E67E22",
     bg: "#E67E22",
   },
   {
     label: "Sustainable Production",
-    detail: "Recyclable polymers and responsible practices — reducing waste at every stage.",
+    detail: "Recyclable polymers and responsible practices.",
     color: "#8E44AD",
     bg: "#8E44AD",
   },
   {
     label: "Continuous Innovation",
-    detail: "From 3D-printed prototypes to full injection-mould tooling — staying ahead.",
+    detail: "From 3D-printed prototypes to full injection-mould tooling.",
     color: "#C0392B",
     bg: "#C0392B",
   },
@@ -103,17 +103,16 @@ export default function About() {
             className="max-w-3xl"
           >
             <div className="flex items-center gap-2 mb-4">
-              <span className="w-2 h-2 rounded-full bg-[#108E2B] animate-pulse" />
-              <p className="text-sm font-semibold tracking-[0.15em] uppercase text-[#108E2B]">
+              <p className="text-md font-regular tracking-[0.15em] uppercase text-[#108E2B]">
                 Who We Are
               </p>
             </div>
-            <h1 className="text-4xl md:text-6xl font-semibold tracking-tighter text-[#0B1215] mb-5">
+            <h1 className="text-4xl md:text-6xl font-medium tracking-tighter text-[#0B1215] mb-5">
               About PurePlast
             </h1>
             <p className="text-lg md:text-xl text-black/55 leading-relaxed max-w-2xl">
               An industrial precision plastic manufacturer — building Kenya&apos;s most
-              capable polymer manufacturing infrastructure, one long-term partnership at a time.
+              capable polymer manufacturing infrastructure.
             </p>
           </motion.div>
         </div>
@@ -155,21 +154,20 @@ export default function About() {
               className="space-y-6"
             >
               <div>
-                <p className="text-sm font-semibold tracking-[0.15em] uppercase text-[#004C97] mb-4">
+                <p className="text-md font-medium tracking-[0.15em] uppercase text-[#004C97] mb-4">
                   Our Story
                 </p>
                 <h2 className="text-3xl md:text-4xl font-semibold tracking-tighter text-[#0B1215] mb-6 leading-snug">
-                  Built in Kenya.{" "}
+                  Made in Kenya.{" "}
                   <span className="text-[#004C97]">Trusted across the region.</span>
                 </h2>
-                <p className="text-base md:text-lg text-black/60 leading-relaxed mb-5">
+                <p className="text-base font-regular md:text-lg text-black/60 leading-relaxed mb-5">
                   PurePlast was established in Kitengela, Kajiado County, with a
                   singular focus: manufacture plastic products that match
                   global quality standards at prices that work for the East African market.
                 </p>
                 <p className="text-base md:text-lg text-black/60 leading-relaxed">
-                  What began as a household plastics operation has grown into a
-                  full-spectrum polymer manufacturing business — spanning everyday consumer
+                  Our operation has grown into a full-spectrum polymer manufacturing business, spanning everyday consumer
                   goods, custom injection-moulded components, and precision 3D-printed parts.
                 </p>
               </div>
@@ -222,7 +220,7 @@ export default function About() {
             viewport={{ once: true }}
             className="mb-14"
           >
-            <p className="text-sm font-semibold tracking-[0.15em] uppercase text-[#108E2B] mb-3">
+            <p className="text-md font-regular tracking-[0.15em] uppercase text-[#108E2B] mb-3">
               What Drives Us
             </p>
             <h2 className="text-3xl md:text-4xl font-semibold tracking-tighter text-[#0B1215]">
@@ -261,12 +259,12 @@ export default function About() {
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="mb-14"
+            className="mb-10"
           >
-            <p className="text-sm font-semibold tracking-[0.15em] uppercase text-[#004C97] mb-3">
+            <p className="text-md font-regular tracking-[0.15em] uppercase text-[#004C97] mb-3">
               What We Do
             </p>
-            <h2 className="text-3xl md:text-4xl font-semibold tracking-tighter text-[#0B1215] max-w-lg">
+            <h2 className="text-3xl md:text-4xl font-semibold tracking-[0.02em] text-[#0B1215] max-w-lg">
               Manufacturing Capabilities
             </h2>
             <p className="text-base md:text-lg text-black/50 mt-3 max-w-lg leading-relaxed">
@@ -282,14 +280,14 @@ export default function About() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.08 }}
-                className="p-8 rounded-3xl border border-[#E5E5E5] bg-[#FAFAF8] hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
+                className="p-5 rounded-3xl border border-[#E5E5E5] bg-[#FAFAF8] hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
               >
                 <div
                   className="w-3 h-10 rounded-full mb-6"
                   style={{ background: cap.color }}
                 />
-                <h3 className="font-bold text-xl text-[#0B1215] mb-3">{cap.title}</h3>
-                <p className="text-base text-black/50 leading-relaxed mb-5">{cap.body}</p>
+                <h3 className="font-bold text-xl text-[#0B1215] mb-2">{cap.title}</h3>
+                <p className="text-base text-black/50 leading-relaxed mb-4">{cap.body}</p>
                 <div className="flex flex-wrap gap-2">
                   {cap.materials.map((m) => (
                     <span
@@ -321,8 +319,7 @@ export default function About() {
               viewport={{ once: true }}
             >
               <div className="flex items-center gap-2 mb-5">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#108E2B] animate-pulse" />
-                <p className="text-sm font-semibold tracking-[0.15em] uppercase text-white/40">
+                <p className="text-md font-regular tracking-[0.15em] uppercase text-white/40">
                   How We Work
                 </p>
               </div>
@@ -386,7 +383,7 @@ export default function About() {
       {/* ── CERTIFICATIONS ──────────────────────────────────────────────────── */}
       <section className="py-16 bg-white border-t border-[#E5E5E5]">
         <div className="max-w-7xl mx-auto px-6">
-          <p className="text-sm font-bold tracking-[0.15em] uppercase text-black/30 mb-10 text-center">
+          <p className="text-md font-bold tracking-[0.15em] uppercase text-black/60 mb-8 text-center">
             Standards & Compliance
           </p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -415,7 +412,7 @@ export default function About() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-3xl md:text-5xl font-semibold tracking-tighter text-[#0B1215] mb-5">
+            <h2 className="text-3xl md:text-5xl font-regular tracking-tighter text-[#0B1215] mb-5">
               Ready to talk manufacturing?
             </h2>
             <p className="text-base md:text-lg text-black/50 max-w-lg mx-auto mb-10 leading-relaxed">
