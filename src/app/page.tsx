@@ -128,7 +128,7 @@ export default function Home() {
               What we manufacture
             </h2>
             <p className="text-black/50 mt-2">
-              Six specialised product families — from stock items to made-to-order parts.
+              Six specialised product families curated with expertise from stock items to made-to-order parts.
             </p>
           </motion.div>
 
