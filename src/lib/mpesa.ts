@@ -1,4 +1,12 @@
+let cachedToken: string | null = null;
+let tokenExpiryTime: number | null = null;
+
 export async function getMpesaToken() {
+  // Check if token exists and is valid (with a 60-second buffer)
+  if (cachedToken && tokenExpiryTime && Date.now() < tokenExpiryTime - 60000) {
+    return cachedToken;
+  }
+
   const consumerKey = process.env.MPESA_CONSUMER_KEY;
   const consumerSecret = process.env.MPESA_CONSUMER_SECRET;
   const env = process.env.MPESA_ENV || "sandbox";
@@ -19,8 +27,6 @@ export async function getMpesaToken() {
     headers: {
       Authorization: `Basic ${auth}`,
     },
-    // We shouldn't cache the token response like this because tokens expire.
-    // However, in a production app, we'd cache it until it expires (3599 seconds).
     cache: "no-store", 
   });
 
@@ -29,7 +35,14 @@ export async function getMpesaToken() {
   }
 
   const data = await response.json();
-  return data.access_token as string;
+  
+  // Cache the token
+  cachedToken = data.access_token as string;
+  // Token typically expires in 3599 seconds
+  const expiresIn = data.expires_in ? parseInt(data.expires_in, 10) : 3599;
+  tokenExpiryTime = Date.now() + expiresIn * 1000;
+
+  return cachedToken;
 }
 
 export async function initiateStkPush(phoneNumber: string, amount: number, orderNumber: string) {

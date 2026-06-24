@@ -5,19 +5,40 @@ import { revalidatePath } from "next/cache";
 import { OrderStatus } from "@prisma/client";
 import { initiateStkPush } from "@/lib/mpesa";
 
+import { z } from "zod";
+
+const checkoutSchema = z.object({
+  fullName: z.string().min(2, "Full name must be at least 2 characters"),
+  email: z.string().email("Invalid email address"),
+  phone: z.string().min(9, "Phone number is too short"),
+  addressLine1: z.string().min(5, "Address must be at least 5 characters"),
+  city: z.string().min(2, "City is required"),
+  postalCode: z.string().min(2, "Postal code is required"),
+  paymentMethod: z.string(),
+});
+
 export async function processCheckout(
   formData: FormData,
   cartItems: { id: string; quantity: number }[]
 ) {
-  const fullName = formData.get("fullName") as string;
-  const email = formData.get("email") as string;
-  const phone = formData.get("phone") as string;
-  const addressLine1 = formData.get("addressLine1") as string;
-  const city = formData.get("city") as string;
-  const postalCode = formData.get("postalCode") as string;
-  const paymentMethod = formData.get("paymentMethod") as string;
+  const rawData = {
+    fullName: formData.get("fullName"),
+    email: formData.get("email"),
+    phone: formData.get("phone"),
+    addressLine1: formData.get("addressLine1"),
+    city: formData.get("city"),
+    postalCode: formData.get("postalCode"),
+    paymentMethod: formData.get("paymentMethod"),
+  };
 
-  if (!cartItems.length) {
+  const parsed = checkoutSchema.safeParse(rawData);
+  if (!parsed.success) {
+    throw new Error(parsed.error.issues[0].message);
+  }
+
+  const { fullName, email, phone, addressLine1, city, postalCode, paymentMethod } = parsed.data;
+
+  if (!cartItems || !cartItems.length) {
     throw new Error("Cart is empty");
   }
 
@@ -33,7 +54,7 @@ export async function processCheckout(
 
   // Calculate totals and prepare order items
   let subtotal = 0;
-  const orderItemsData = [];
+  const orderItemsData: { productId: string; quantity: number; priceSnapshot: number }[] = [];
 
   for (const cartItem of cartItems) {
     const product = products.find((p) => p.id === cartItem.id);
@@ -114,11 +135,22 @@ export async function processCheckout(
 
   if (paymentMethod === "mpesa") {
     try {
-      await initiateStkPush(phone, totalAmount, order.orderNumber);
+      const response = await initiateStkPush(phone, totalAmount, order.orderNumber);
+      
+      if (response && response.CheckoutRequestID) {
+        // Log the pending payment to track it securely with CheckoutRequestID
+        await prisma.payment.create({
+          data: {
+            orderId: order.id,
+            amount: totalAmount,
+            transactionId: response.CheckoutRequestID,
+            status: "PENDING"
+          }
+        });
+      }
     } catch (err: any) {
       console.error("M-Pesa STK Push Error:", err);
-      // We don't fail the order creation, but we could return a warning
-      // so the user knows they need to pay via paybill manually or retry.
+      // Even if STK Push fails, order is created. User can retry payment from their dashboard.
     }
   }
 

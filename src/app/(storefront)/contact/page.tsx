@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 
 // ─── Config — swap these when backend is live ──────────────────────────────────
-const CONTACT_EMAIL = "martinmwai901@gmail.com"; // TODO: Replace with sales@pureplast.co.ke when live
+const CONTACT_EMAIL = "sales@pureplast.co.ke";
 
 // ─── Static data ──────────────────────────────────────────────────────────────
 

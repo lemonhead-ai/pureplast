@@ -24,13 +24,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`h-full antialiased ${montserrat.variable}`}>
-      <body className="min-h-full flex flex-col font-sans">
-        <Navbar />
-        <Drawer />
-        <main className="flex-1 pt-20">
-          {children}
-        </main>
-        <Footer />
+      <body className="font-sans">
+        {children}
         <Toaster position="top-right" richColors />
       </body>
     </html>

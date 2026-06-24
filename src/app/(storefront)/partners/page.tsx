@@ -101,7 +101,7 @@ function PartnershipForm() {
     ].join("\n");
 
     // TODO: Replace with API call to /api/partner-enquiry when backend is live
-    window.location.href = `mailto:martinmwai901@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.location.href = `mailto:sales@pureplast.co.ke?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
     setLoading(true);
     setTimeout(() => {

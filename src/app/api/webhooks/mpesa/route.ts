@@ -7,65 +7,72 @@ export async function POST(request: Request) {
     const data = await request.json();
     console.log("Received M-Pesa Webhook:", JSON.stringify(data, null, 2));
 
-    const body = data.Body.stkCallback;
+    const body = data?.Body?.stkCallback;
+    if (!body) {
+      return NextResponse.json({ success: false, error: "Invalid payload" }, { status: 400 });
+    }
+
     const checkoutRequestID = body.CheckoutRequestID;
     const resultCode = body.ResultCode;
 
-    // We can extract metadata if payment was successful
-    let mpesaReceiptNumber = null;
+    let mpesaReceiptNumber: string | null = null;
     let amount = 0;
-    let phoneNumber = "";
     
     if (resultCode === 0 && body.CallbackMetadata) {
       const metadata = body.CallbackMetadata.Item;
       metadata.forEach((item: any) => {
         if (item.Name === "Amount") amount = item.Value;
         if (item.Name === "MpesaReceiptNumber") mpesaReceiptNumber = item.Value;
-        if (item.Name === "PhoneNumber") phoneNumber = item.Value;
       });
     }
 
-    // Since Daraja webhook only gives us the phone number, amount, and receipt number,
-    // we have to match it against orders. However, ideally we stored the `CheckoutRequestID`
-    // in the `Payment` table when initiating STK push.
-    // For this simplified version, let's just log it and assume we match it manually,
-    // or we can find the most recent PENDING order for this phone number.
-    
-    if (resultCode === 0 && mpesaReceiptNumber) {
-      // Find the most recent PENDING order for a user with this phone number
-      const user = await prisma.user.findFirst({
-        where: { phone: { contains: phoneNumber.toString().slice(-9) } }, // Match last 9 digits safely
-        orderBy: { createdAt: 'desc' }
-      });
+    if (!checkoutRequestID) {
+      return NextResponse.json({ success: false, error: "Missing CheckoutRequestID" }, { status: 400 });
+    }
 
-      if (user) {
-        const order = await prisma.order.findFirst({
-          where: { userId: user.id, status: OrderStatus.PENDING },
-          orderBy: { createdAt: 'desc' }
+    // 1. Find the payment record created during STK push
+    const payment = await prisma.payment.findUnique({
+      where: { transactionId: checkoutRequestID },
+      include: { order: true }
+    });
+
+    if (!payment) {
+      console.error(`Payment not found for CheckoutRequestID: ${checkoutRequestID}`);
+      return NextResponse.json({ success: false, error: "Payment not found" }, { status: 404 });
+    }
+
+    // 2. Idempotency Check: Don't process if already successful
+    if (payment.status === PaymentStatus.SUCCESS) {
+      console.log(`Payment ${payment.id} already processed.`);
+      return NextResponse.json({ success: true, message: "Already processed" });
+    }
+
+    if (resultCode === 0 && mpesaReceiptNumber) {
+      // 3. Process Successful Payment
+      await prisma.$transaction(async (tx) => {
+        await tx.payment.update({
+          where: { id: payment.id },
+          data: {
+            mpesaReceipt: mpesaReceiptNumber,
+            status: PaymentStatus.SUCCESS,
+            paidAt: new Date(),
+          }
         });
 
-        if (order) {
-          // Create Payment record
-          await prisma.payment.create({
-            data: {
-              orderId: order.id,
-              amount: amount,
-              mpesaReceipt: mpesaReceiptNumber,
-              transactionId: checkoutRequestID,
-              status: PaymentStatus.SUCCESS,
-              paidAt: new Date(),
-            }
-          });
+        await tx.order.update({
+          where: { id: payment.orderId },
+          data: { status: OrderStatus.PAID }
+        });
+      });
 
-          // Update Order
-          await prisma.order.update({
-            where: { id: order.id },
-            data: { status: OrderStatus.PAID }
-          });
-
-          console.log(`Successfully processed payment for order ${order.orderNumber}`);
-        }
-      }
+      console.log(`Successfully processed payment for order ${payment.order.orderNumber}`);
+    } else {
+      // 4. Process Failed Payment
+      await prisma.payment.update({
+        where: { id: payment.id },
+        data: { status: PaymentStatus.FAILED }
+      });
+      console.log(`Payment failed for order ${payment.order.orderNumber}. ResultCode: ${resultCode}`);
     }
 
     return NextResponse.json({ success: true });
@@ -74,3 +81,4 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: false }, { status: 500 });
   }
 }
+
