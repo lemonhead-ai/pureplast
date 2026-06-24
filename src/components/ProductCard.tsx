@@ -38,15 +38,18 @@ export function ProductCard({ product, index, showCTA = true }: ProductCardProps
     }
   }
 
-  function handleAdd(e: React.MouseEvent) {
+  function handleAddBuyNow(e: React.MouseEvent) {
     e.preventDefault();
-    if (product.isEngineered) {
-      addToQuote(product);
-      openDrawer("quote");
-    } else {
-      addToBuyNow(product);
-      openDrawer("buy");
-    }
+    addToBuyNow(product);
+    openDrawer("buy");
+    setAdded(true);
+    setTimeout(() => setAdded(false), 1800);
+  }
+
+  function handleAddQuote(e: React.MouseEvent) {
+    e.preventDefault();
+    addToQuote(product);
+    openDrawer("quote");
     setAdded(true);
     setTimeout(() => setAdded(false), 1800);
   }
@@ -176,32 +179,31 @@ export function ProductCard({ product, index, showCTA = true }: ProductCardProps
 
             {/* CTA */}
             {showCTA && (
-              <button
-                onClick={product.inStock !== false ? handleAdd : undefined}
-                disabled={product.inStock === false && !product.isEngineered}
-                className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-2xl transition-all duration-200 whitespace-nowrap
-                  ${
-                    added
-                      ? "bg-[#108E2B] text-white scale-95"
-                      : product.isEngineered
-                      ? "bg-[#004C97]/10 text-[#004C97] hover:bg-[#004C97] hover:text-white"
-                      : product.inStock !== false
-                      ? "bg-[#0B1215]/8 text-[#0B1215] hover:bg-[#0B1215] hover:text-white"
-                      : "bg-black/5 text-black/30 cursor-not-allowed"
-                  }`}
-              >
-                {added ? (
-                  "Added ✓"
-                ) : product.isEngineered ? (
-                  <>
-                    <FileText size={13} /> Quote
-                  </>
-                ) : (
-                  <>
-                    <ShoppingCart size={13} /> Order Now
-                  </>
+              <div className="flex items-center gap-2">
+                {!product.isEngineered && (
+                  <button
+                    onClick={product.inStock !== false ? handleAddBuyNow : undefined}
+                    disabled={product.inStock === false}
+                    className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-2xl transition-all duration-200 whitespace-nowrap
+                      ${
+                        added
+                          ? "bg-[#108E2B] text-white scale-95"
+                          : product.inStock !== false
+                          ? "bg-[#0B1215]/8 text-[#0B1215] hover:bg-[#0B1215] hover:text-white"
+                          : "bg-black/5 text-black/30 cursor-not-allowed"
+                      }`}
+                  >
+                    <ShoppingCart size={13} /> Order
+                  </button>
                 )}
-              </button>
+                
+                <button
+                  onClick={handleAddQuote}
+                  className="flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-2xl transition-all duration-200 whitespace-nowrap bg-[#004C97]/10 text-[#004C97] hover:bg-[#004C97] hover:text-white"
+                >
+                  <FileText size={13} /> Quote
+                </button>
+              </div>
             )}
           </div>
         </div>

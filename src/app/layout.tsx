@@ -1,8 +1,16 @@
 import type { Metadata } from "next";
+import { Montserrat } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import { Drawer } from "@/components/Drawer";
 import { Footer } from "@/components/Footer";
+import { Toaster } from "sonner";
+
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  variable: "--font-montserrat",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "PurePlast | Plastic Manufacturing Solutions",
@@ -15,10 +23,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full antialiased">
-      <head>
-        <link href="https://api.fontshare.com/v2/css?f[]=clash-grotesk@200,300,400,500,600,700&display=swap" rel="stylesheet" />
-      </head>
+    <html lang="en" className={`h-full antialiased ${montserrat.variable}`}>
       <body className="min-h-full flex flex-col font-sans">
         <Navbar />
         <Drawer />
@@ -26,6 +31,7 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
+        <Toaster position="top-right" richColors />
       </body>
     </html>
   );

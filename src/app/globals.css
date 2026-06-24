@@ -14,8 +14,8 @@
   --color-primary: var(--primary);
   --color-secondary: var(--secondary);
   --color-border: var(--border);
-  --font-sans: "Clash Grotesk", sans-serif;
-  --font-mono: "Clash Grotesk", monospace;
+  --font-sans: var(--font-montserrat), sans-serif;
+  --font-mono: var(--font-montserrat), monospace;
 }
 
 body {
@@ -23,7 +23,7 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans);
   font-weight: 500;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.05em;
   font-size: medium;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

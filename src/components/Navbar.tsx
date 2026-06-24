@@ -97,7 +97,7 @@ export function Navbar() {
           </Link>
 
           {/* Desktop nav */}
-          <div className="hidden md:flex items-center gap-4 text-lg font-medium">
+          <div className="hidden lg:flex items-center gap-8 text-lg font-medium tracking-normal">
             {NAV_LINKS.map(({ href, label }) => {
               const active = isActive(href);
               return (
@@ -194,7 +194,7 @@ export function Navbar() {
                       <Link
                         href={href}
                         onClick={() => setMobileOpen(false)}
-                        className={`flex items-center gap-3 py-3 px-3 text-xl font-medium rounded-xl transition-colors ${
+                        className={`flex items-center gap-3 py-3 px-3 text-xl font-medium tracking-normal rounded-xl transition-colors ${
                           active
                             ? "text-[#004C97] bg-[#004C97]/8"
                             : "text-gray-800 hover:text-[#004C97] hover:bg-[#004C97]/5"

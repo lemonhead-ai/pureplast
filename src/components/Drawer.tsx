@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 import { X, Trash2, ShoppingCart, FileText } from "@geist-ui/icons";
 import { useCartStore } from "@/store/useCartStore";
 import { Button } from "./ui/Button";
@@ -91,13 +92,17 @@ export function Drawer() {
 
             <div className="p-6 border-t border-border">
               {drawerTab === 'buy' ? (
-                <Button className="w-full" size="lg" disabled={currentCart.length === 0}>
-                  Proceed to Checkout
-                </Button>
+                <Link href="/checkout" onClick={closeDrawer}>
+                  <Button className="w-full" size="lg" disabled={currentCart.length === 0}>
+                    Proceed to Checkout
+                  </Button>
+                </Link>
               ) : (
-                <Button className="w-full bg-[#004C97] hover:bg-[#004C97]/90 text-white" size="lg" disabled={currentCart.length === 0}>
-                  Request Custom Quote
-                </Button>
+                <Link href="/request-quote" onClick={closeDrawer}>
+                  <Button className="w-full bg-[#004C97] hover:bg-[#004C97]/90 text-white" size="lg" disabled={currentCart.length === 0}>
+                    Request Custom Quote
+                  </Button>
+                </Link>
               )}
             </div>
           </motion.div>
