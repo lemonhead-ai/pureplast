@@ -8,13 +8,14 @@ import { CATEGORIES, type Product } from "@/data/products";
 import { useCartStore } from "@/store/useCartStore";
 import { Button } from "@/components/ui/Button";
 import { ProductCard } from "@/components/ProductCard";
+import { SUSTAINABILITY_METRICS } from "@/data/sustainability";
 
 // ─── Stat strip ───────────────────────────────────────────────────────────────
 
 const STATS = [
+  { value: SUSTAINABILITY_METRICS.recycledTonnes.value || "5,000", label: "Tonnes waste diverted" },
   { value: "30+", label: "Product lines" },
   { value: "6", label: "Categories" },
-  { value: "100%", label: "BPA-free materials" },
   { value: "24h", label: "Quote turnaround" },
 ];
 
@@ -93,9 +94,18 @@ export default function ClientHome({ featuredProducts, categoryCounts }: { featu
                 <Button
                   size="lg"
                   variant="outline"
-                  className="h-13 px-8 text-base rounded-full bg-white/60 backdrop-blur-md border-black/15 hover:bg-white"
+                  className="h-13 px-8 text-base rounded-full bg-white/60 backdrop-blur-md border-black/15 hover:bg-white text-[#0B1215]"
                 >
                   Request Custom Quote
+                </Button>
+              </Link>
+              <Link href="/sustainability">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="h-13 px-8 text-base rounded-full bg-[#108E2B]/10 backdrop-blur-md border-[#108E2B]/20 hover:bg-[#108E2B]/20 text-[#108E2B]"
+                >
+                  Our Sustainability Journey
                 </Button>
               </Link>
             </div>
@@ -107,11 +117,29 @@ export default function ClientHome({ featuredProducts, categoryCounts }: { featu
           <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-start md:justify-center gap-8 md:gap-16 overflow-x-auto">
             {STATS.map((s) => (
               <div key={s.label} className="flex items-center gap-2 flex-shrink-0">
-                <span className="text-xl font-bold text-[#004C97]">{s.value}</span>
+                <span className={`text-xl font-bold ${s.label.includes('diverted') ? 'text-[#108E2B]' : 'text-[#004C97]'}`}>{s.value}</span>
                 <span className="text-sm text-black/50 font-medium">{s.label}</span>
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ── SUSTAINABILITY TEASER ───────────────────────────────────────────── */}
+      <section className="py-12 bg-[#FAFAF8] border-b border-[#E5E5E5]">
+        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[#108E2B]/10 text-[#108E2B]">
+              <span className="text-xl font-bold">↻</span>
+            </div>
+            <div>
+              <p className="text-sm font-semibold tracking-[0.15em] uppercase text-[#108E2B] mb-1">Our Commitment</p>
+              <p className="text-[#0B1215] font-medium">We manufacture using recycled post-consumer waste wherever possible.</p>
+            </div>
+          </div>
+          <Link href="/sustainability" className="text-sm font-bold text-[#004C97] hover:underline flex items-center gap-1">
+            Read our narrative <ArrowRight size={16} />
+          </Link>
         </div>
       </section>
 

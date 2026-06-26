@@ -15,6 +15,7 @@ const NAV_LINKS = [
   {href: "/3Dprinting", label: "3D Printing" },
   { href: "/about", label: "About Us" },
   { href: "/partners", label: "Our Partners" },
+  { href: "/sustainability", label: "Sustainability" },
   { href: "/contact", label: "Contact Us" },
 ];
 

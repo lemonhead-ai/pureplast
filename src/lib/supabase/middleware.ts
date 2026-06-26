@@ -41,9 +41,8 @@ export async function updateSession(request: NextRequest) {
       return NextResponse.redirect(url)
     }
     
-    // In a real app with RBAC, we would also check the Prisma User table 
-    // to see if the user's role is 'ADMIN'. For now, any logged-in user 
-    // reaches /admin, but later we will link Supabase Auth to Prisma.
+    // The current Prisma schema no longer stores a role field, so any
+    // authenticated user can reach the admin area for now.
   }
 
   return supabaseResponse

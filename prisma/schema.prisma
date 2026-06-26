@@ -6,18 +6,12 @@ datasource db {
   provider = "postgresql"
 }
 
-enum Role {
-  CUSTOMER
-  ADMIN
-}
-
 model User {
   id        String   @id @default(uuid())
   email     String   @unique
   password  String? // nullable since maybe magic link later
   fullName  String
   phone     String?
-  role      Role     @default(CUSTOMER)
   createdAt DateTime @default(now())
 
   companyId String?
@@ -42,6 +36,14 @@ model Company {
   users User[]
 }
 
+enum MaterialGrade {
+  VIRGIN
+  GR2
+  GR3
+  POST_CONSUMER
+  MIXED
+}
+
 model Product {
   id            String   @id @default(uuid())
   name          String
@@ -56,6 +58,14 @@ model Product {
   unit          String?
   active        Boolean  @default(true)
   createdAt     DateTime @default(now())
+
+  // Sustainability fields
+  recycledContentPct  Int?
+  materialGrade       MaterialGrade?
+  carbonOffset        Boolean        @default(false)
+  bpaFree             Boolean?
+  foodSafe            Boolean?
+  sustainabilityNotes String?
 
   images     ProductImage[]
   quoteItems QuoteItem[]
@@ -81,8 +91,8 @@ enum QuoteStatus {
 }
 
 model Quote {
-  id        String      @id @default(uuid())
-  userId    String
+  id           String      @id @default(uuid())
+  userId       String
   status       QuoteStatus @default(PENDING)
   offeredPrice Float?
   adminNotes   String?
@@ -100,7 +110,7 @@ model QuoteItem {
   quoteId       String
   productId     String
   quantity      Int
-  priceSnapshot Float?  // Nullable for backward compatibility with existing quotes
+  priceSnapshot Float? // Nullable for backward compatibility with existing quotes
   notes         String?
 
   quote   Quote   @relation(fields: [quoteId], references: [id])

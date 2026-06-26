@@ -1,11 +1,9 @@
 'use server'
 
-import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { prisma } from '@/lib/prisma'
 
-export async function login(prevState: any, formData: FormData) {
+export async function login(prevState: unknown, formData: FormData) {
   const supabase = await createClient()
 
   const email = formData.get('email') as string
@@ -23,17 +21,13 @@ export async function login(prevState: any, formData: FormData) {
     return { error: error.message }
   }
 
-  // Find user role in Prisma to determine redirect
   if (data.user) {
-    const dbUser = await prisma.user.findUnique({
-      where: { email: data.user.email },
-      select: { role: true }
-    })
-
-    if (dbUser?.role === 'ADMIN') {
-      redirect('/admin')
-    } else {
-      redirect('/')
-    }
+    redirect('/')
   }
+}
+
+export async function logout() {
+  const supabase = await createClient()
+  await supabase.auth.signOut()
+  redirect('/login')
 }

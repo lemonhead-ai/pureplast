@@ -12,6 +12,7 @@ import {
   LayoutDashboard, 
   LogOut 
 } from "lucide-react";
+import { logout } from "@/app/(auth)/login/actions";
 
 type User = {
   fullName: string | null;
@@ -89,7 +90,7 @@ export default function AdminSidebar({ user }: { user?: User | null }) {
             </div>
             
             {/* Logout uses an empty href or form to sign out in a real app, here we just link to a logout route or action */}
-            <form action="/auth/signout" method="POST">
+            <form action={logout}>
               <button
                 type="submit"
                 className="w-8 h-8 rounded-full hover:bg-red-50 text-red-500 flex items-center justify-center transition-colors"

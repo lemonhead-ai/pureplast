@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
 import { redirect } from 'next/navigation'
 
-export async function register(prevState: any, formData: FormData) {
+export async function register(prevState: unknown, formData: FormData) {
   const supabase = await createClient()
 
   const fullName = formData.get('fullName') as string
@@ -28,9 +28,6 @@ export async function register(prevState: any, formData: FormData) {
         data: {
           email: data.user.email!,
           fullName: fullName,
-          // First user to register becomes ADMIN automatically for convenience during dev!
-          // We check if any users exist.
-          role: (await prisma.user.count()) === 0 ? 'ADMIN' : 'CUSTOMER'
         }
       })
     } catch (err) {

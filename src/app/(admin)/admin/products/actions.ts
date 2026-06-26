@@ -14,6 +14,15 @@ export async function createProduct(formData: FormData) {
   const featured = formData.get("featured") === "on";
   const active = formData.get("active") === "on";
   const imageUrl = (formData.get("imageUrl") as string) || null;
+
+  const recycledContentPctStr = formData.get("recycledContentPct") as string;
+  const recycledContentPct = recycledContentPctStr ? parseInt(recycledContentPctStr, 10) : null;
+  const materialGradeStr = formData.get("materialGrade") as string;
+  const materialGrade = materialGradeStr ? materialGradeStr as any : null;
+  const carbonOffset = formData.get("carbonOffset") === "on";
+  const bpaFree = formData.get("bpaFree") === "on";
+  const foodSafe = formData.get("foodSafe") === "on";
+  const sustainabilityNotes = (formData.get("sustainabilityNotes") as string) || null;
   
   // Basic slugification of name or sku
   const slug = sku.toLowerCase().replace(/[^a-z0-9]+/g, "-");
@@ -31,6 +40,12 @@ export async function createProduct(formData: FormData) {
       featured,
       active,
       imageUrl,
+      recycledContentPct,
+      materialGrade,
+      carbonOffset,
+      bpaFree,
+      foodSafe,
+      sustainabilityNotes,
     },
   });
 
@@ -51,6 +66,15 @@ export async function updateProduct(id: string, formData: FormData) {
   const active = formData.get("active") === "on";
   const imageUrl = (formData.get("imageUrl") as string) || null;
 
+  const recycledContentPctStr = formData.get("recycledContentPct") as string;
+  const recycledContentPct = recycledContentPctStr ? parseInt(recycledContentPctStr, 10) : null;
+  const materialGradeStr = formData.get("materialGrade") as string;
+  const materialGrade = materialGradeStr ? materialGradeStr as any : null;
+  const carbonOffset = formData.get("carbonOffset") === "on";
+  const bpaFree = formData.get("bpaFree") === "on";
+  const foodSafe = formData.get("foodSafe") === "on";
+  const sustainabilityNotes = (formData.get("sustainabilityNotes") as string) || null;
+
   await prisma.product.update({
     where: { id },
     data: {
@@ -64,6 +88,12 @@ export async function updateProduct(id: string, formData: FormData) {
       featured,
       active,
       imageUrl,
+      recycledContentPct,
+      materialGrade,
+      carbonOffset,
+      bpaFree,
+      foodSafe,
+      sustainabilityNotes,
     },
   });
 

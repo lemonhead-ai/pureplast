@@ -19,6 +19,14 @@ export interface Product {
   featured?: boolean;
   unit?: string; // e.g. "per piece", "per dozen"
   inStock?: boolean;
+  
+  // Sustainability
+  recycledContentPct?: number;
+  materialGrade?: "VIRGIN" | "GR2" | "GR3" | "POST_CONSUMER" | "MIXED";
+  carbonOffset?: boolean;
+  bpaFree?: boolean;
+  foodSafe?: boolean;
+  sustainabilityNotes?: string;
 }
 
 export interface Category {
@@ -307,4 +315,16 @@ export function getProductsByCategory(category: ProductCategory): Product[] {
 
 export function getCategoryCount(category: ProductCategory): number {
   return PRODUCTS.filter((p) => p.category === category).length;
+}
+
+export function getSustainabilityBadges(product: Product | any): string[] {
+  const badges: string[] = [];
+  if (product.recycledContentPct) badges.push(`${product.recycledContentPct}% recycled`);
+  if (product.carbonOffset) badges.push("Carbon offset");
+  if (product.bpaFree) badges.push("BPA-free");
+  if (product.foodSafe) badges.push("Food safe");
+  if (product.materialGrade && product.materialGrade !== "VIRGIN") {
+    badges.push(product.materialGrade.replace("_", " "));
+  }
+  return badges;
 }

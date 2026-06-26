@@ -6,7 +6,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { ShoppingCart, FileText, ChevronRight, ChevronLeft, Package } from "@geist-ui/icons";
 import { useCartStore } from "@/store/useCartStore";
-import { CATEGORIES, type Product } from "@/data/products";
+import { CATEGORIES, getSustainabilityBadges, type Product } from "@/data/products";
+import { SustainabilityBadge } from "@/components/sustainability/SustainabilityBadge";
 
 interface ProductCardProps {
   product: Product;
@@ -160,6 +161,26 @@ export function ProductCard({ product, index, showCTA = true }: ProductCardProps
           <p className="text-xs text-black/50 leading-relaxed line-clamp-2">
             {product.description}
           </p>
+
+          {/* Sustainability Badges */}
+          {(() => {
+            const badges = getSustainabilityBadges(product);
+            if (badges.length === 0) return null;
+            const displayBadges = badges.slice(0, 2);
+            const extra = badges.length - 2;
+            return (
+              <div className="flex flex-wrap items-center gap-1.5 mt-1">
+                {displayBadges.map((badge, i) => (
+                  <SustainabilityBadge key={i} label={badge} icon={i === 0} className="scale-90 origin-left" />
+                ))}
+                {extra > 0 && (
+                  <span className="text-[10px] font-semibold text-[#108E2B] bg-[#108E2B]/10 px-1.5 py-0.5 rounded-md">
+                    +{extra}
+                  </span>
+                )}
+              </div>
+            );
+          })()}
 
           <div className={`mt-auto pt-3 ${showCTA ? "border-t border-[#F0F0EE] flex items-center justify-between gap-3" : ""}`}>
             {/* Status & Unit */}

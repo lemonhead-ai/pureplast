@@ -25,8 +25,8 @@ const CORE_VALUES = [
   {
     label: "Long-Term Partnerships",
     detail: "Custom tooling, branded moulds, and exclusive formulations.",
-    color: "#108E2B",
-    bg: "#108E2B",
+    color: "#8E44AD",
+    bg: "#8E44AD",
   },
   {
     label: "Local Manufacturing",
@@ -36,9 +36,9 @@ const CORE_VALUES = [
   },
   {
     label: "Sustainable Production",
-    detail: "Recyclable polymers and responsible practices.",
-    color: "#8E44AD",
-    bg: "#8E44AD",
+    detail: "Closed-loop recycling and zero-waste initiatives.",
+    color: "#108E2B",
+    bg: "#108E2B",
   },
   {
     label: "Continuous Innovation",
@@ -84,8 +84,10 @@ const CAPABILITIES = [
 const CERTIFICATIONS = [
   { label: "KEBS Certified", sub: "Kenya Bureau of Standards" },
   { label: "BPA-Free Production", sub: "All consumer products" },
-  { label: "ISO 9001 Ready", sub: "Quality Management — in progress" },
+  { label: "Closed-Loop Recycling", sub: "Zero-waste manufacturing" },
   { label: "Food-Safe Materials", sub: "Kitchen & packaging lines" },
+  { label: "Recycled Content", sub: "Up to 100% post-consumer materials" },
+  { label: "ISO 9001 Ready", sub: "Quality Management — in progress" },
 ];
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
@@ -252,6 +254,62 @@ export default function About() {
         </div>
       </section>
 
+      {/* ── SUSTAINABLE OPERATIONS ────────────────────────────────────────── */}
+      <section className="py-20 md:py-28 bg-[#108E2B] text-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="space-y-6"
+            >
+              <p className="text-md font-medium tracking-[0.15em] uppercase text-white/50">
+                Environmental Commitment
+              </p>
+              <h2 className="text-3xl md:text-4xl font-semibold tracking-tighter mb-6 leading-snug">
+                Manufacturing with a <br/>
+                <span className="text-white/70">zero-waste mindset.</span>
+              </h2>
+              <p className="text-lg text-white/80 leading-relaxed mb-5">
+                We believe that modern manufacturing must be responsible. We actively reduce our environmental footprint by using closed-loop recycling systems in our facility, ensuring no plastic waste leaves our plant.
+              </p>
+              <p className="text-lg text-white/80 leading-relaxed">
+                By investing in post-consumer recycled materials (up to 100% on specific product lines) and reducing virgin plastic dependency, we help our partners achieve their own sustainability targets without sacrificing durability or quality.
+              </p>
+              
+              <div className="pt-6">
+                <Link href="/sustainability">
+                  <Button className="bg-white text-[#108E2B] hover:bg-white/90 border-0 rounded-full h-12 px-7 text-base">
+                    Read our full Sustainability Report <ArrowRight className="ml-2 w-4 h-4" />
+                  </Button>
+                </Link>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="grid grid-cols-1 sm:grid-cols-2 gap-4"
+            >
+              {[
+                { metric: "0%", label: "Plastic waste sent to landfill from our facility" },
+                { metric: "100%", label: "Recyclable polymers across our consumer range" },
+                { metric: "GR2/GR3", label: "Reprocessed materials offered on industrial products" },
+                { metric: "Verified", label: "Carbon offset initiatives supporting local conservation" },
+              ].map((item, i) => (
+                <div key={i} className="p-6 rounded-2xl bg-white/10 border border-white/20">
+                  <p className="text-2xl font-bold text-white mb-2">{item.metric}</p>
+                  <p className="text-sm text-white/70 leading-relaxed">{item.label}</p>
+                </div>
+              ))}
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
       {/* ── MANUFACTURING CAPABILITIES ──────────────────────────────────────── */}
       <section className="py-20 md:py-28 bg-white border-b border-[#E5E5E5]">
         <div className="max-w-7xl mx-auto px-6">
@@ -386,7 +444,7 @@ export default function About() {
           <p className="text-md font-bold tracking-[0.15em] uppercase text-black/60 mb-8 text-center">
             Standards & Compliance
           </p>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {CERTIFICATIONS.map((cert, i) => (
               <motion.div
                 key={cert.label}
@@ -394,9 +452,9 @@ export default function About() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.07 }}
-                className="p-6 rounded-2xl border border-[#E5E5E5] bg-[#FAFAF8] text-center"
+                className={`p-6 rounded-2xl border ${cert.label.includes('Recycl') ? 'border-[#108E2B]/30 bg-[#108E2B]/5' : 'border-[#E5E5E5] bg-[#FAFAF8]'} text-center`}
               >
-                <p className="font-bold text-base text-[#0B1215] mb-2">{cert.label}</p>
+                <p className={`font-bold text-base ${cert.label.includes('Recycl') ? 'text-[#108E2B]' : 'text-[#0B1215]'} mb-2`}>{cert.label}</p>
                 <p className="text-sm text-black/40">{cert.sub}</p>
               </motion.div>
             ))}

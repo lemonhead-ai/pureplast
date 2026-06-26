@@ -178,6 +178,80 @@ export default function ProductForm({ product }: { product?: Product }) {
         />
       </div>
 
+      {/* Sustainability Group */}
+      <div className="space-y-6 pt-6 border-t border-[#E5E5E5]">
+        <h3 className="text-lg font-semibold text-[#0B1215]">Sustainability</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <label className="text-sm font-semibold text-[#0B1215]">Recycled Content %</label>
+            <input
+              name="recycledContentPct"
+              type="number"
+              min="0"
+              max="100"
+              defaultValue={product?.recycledContentPct || ""}
+              className="w-full h-11 px-4 rounded-xl border border-[#E5E5E5] bg-[#F5F5F2] focus:outline-none focus:ring-2 focus:ring-[#004C97]/30 text-sm"
+            />
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-semibold text-[#0B1215]">Material Grade</label>
+            <select
+              name="materialGrade"
+              defaultValue={product?.materialGrade || ""}
+              className="w-full h-11 px-4 rounded-xl border border-[#E5E5E5] bg-[#F5F5F2] focus:outline-none focus:ring-2 focus:ring-[#004C97]/30 text-sm appearance-none"
+            >
+              <option value="">Select a grade...</option>
+              <option value="VIRGIN">Virgin</option>
+              <option value="GR2">GR2</option>
+              <option value="GR3">GR3</option>
+              <option value="POST_CONSUMER">Post Consumer</option>
+              <option value="MIXED">Mixed</option>
+            </select>
+          </div>
+        </div>
+        
+        <div className="flex gap-8">
+          <label className="flex items-center gap-3 cursor-pointer group">
+            <input
+              type="checkbox"
+              name="carbonOffset"
+              defaultChecked={product?.carbonOffset}
+              className="w-5 h-5 rounded border-[#E5E5E5] text-[#004C97] focus:ring-[#004C97]"
+            />
+            <span className="text-sm font-semibold text-[#0B1215] group-hover:text-[#004C97]">Carbon Offset</span>
+          </label>
+          <label className="flex items-center gap-3 cursor-pointer group">
+            <input
+              type="checkbox"
+              name="bpaFree"
+              defaultChecked={product?.bpaFree || false}
+              className="w-5 h-5 rounded border-[#E5E5E5] text-[#004C97] focus:ring-[#004C97]"
+            />
+            <span className="text-sm font-semibold text-[#0B1215] group-hover:text-[#004C97]">BPA-Free</span>
+          </label>
+          <label className="flex items-center gap-3 cursor-pointer group">
+            <input
+              type="checkbox"
+              name="foodSafe"
+              defaultChecked={product?.foodSafe || false}
+              className="w-5 h-5 rounded border-[#E5E5E5] text-[#004C97] focus:ring-[#004C97]"
+            />
+            <span className="text-sm font-semibold text-[#0B1215] group-hover:text-[#004C97]">Food Safe</span>
+          </label>
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-sm font-semibold text-[#0B1215]">Sustainability Notes</label>
+          <textarea
+            name="sustainabilityNotes"
+            defaultValue={product?.sustainabilityNotes || ""}
+            rows={2}
+            className="w-full p-4 rounded-xl border border-[#E5E5E5] bg-[#F5F5F2] focus:outline-none focus:ring-2 focus:ring-[#004C97]/30 text-sm resize-none"
+            placeholder="Additional environmental credentials..."
+          />
+        </div>
+      </div>
+
       {/* Toggles */}
       <div className="flex gap-8 border-t border-[#E5E5E5] pt-6">
         <label className="flex items-center gap-3 cursor-pointer group">

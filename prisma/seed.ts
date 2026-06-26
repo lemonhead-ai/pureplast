@@ -18,6 +18,12 @@ async function main() {
       update: {
         featured: product.featured || false,
         unit: product.unit || null,
+        recycledContentPct: product.recycledContentPct ?? (product.category === 'packaging' ? 80 : product.category === 'construction' ? 100 : null),
+        materialGrade: product.materialGrade ?? (product.category === 'construction' ? 'MIXED' : product.category === 'industrial' ? 'GR2' : product.category === 'packaging' ? 'POST_CONSUMER' : 'VIRGIN'),
+        carbonOffset: product.carbonOffset ?? (Math.random() > 0.7),
+        bpaFree: product.bpaFree ?? (['household', 'kitchenware'].includes(product.category)),
+        foodSafe: product.foodSafe ?? (['household', 'kitchenware', 'packaging'].includes(product.category)),
+        sustainabilityNotes: product.sustainabilityNotes || null,
       },
       create: {
         id: product.id,
@@ -31,6 +37,12 @@ async function main() {
         featured: product.featured || false,
         unit: product.unit || null,
         active: true,
+        recycledContentPct: product.recycledContentPct ?? (product.category === 'packaging' ? 80 : product.category === 'construction' ? 100 : null),
+        materialGrade: product.materialGrade ?? (product.category === 'construction' ? 'MIXED' : product.category === 'industrial' ? 'GR2' : product.category === 'packaging' ? 'POST_CONSUMER' : 'VIRGIN'),
+        carbonOffset: product.carbonOffset ?? (Math.random() > 0.7),
+        bpaFree: product.bpaFree ?? (['household', 'kitchenware'].includes(product.category)),
+        foodSafe: product.foodSafe ?? (['household', 'kitchenware', 'packaging'].includes(product.category)),
+        sustainabilityNotes: product.sustainabilityNotes || null,
       },
     });
     console.log(`Created product with sku: ${p.sku}`);
