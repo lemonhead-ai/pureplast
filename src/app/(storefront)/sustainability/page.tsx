@@ -5,12 +5,20 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { ArrowRight, Download } from "@geist-ui/icons";
-import { SUSTAINABILITY_METRICS, SUSTAINABILITY_PILLARS } from "@/data/sustainability";
+import {
+  SUSTAINABILITY_METRICS,
+  SUSTAINABILITY_PILLARS,
+  ESG_REPORT_PATH,
+  isEsgReportAvailable,
+} from "@/data/sustainability";
 import { ImpactCounter } from "@/components/sustainability/ImpactCounter";
 import { SustainabilityPillar } from "@/components/sustainability/SustainabilityPillar";
 import { PendingMetricSlot } from "@/components/sustainability/PendingMetricSlot";
+import { TrustSection } from "@/components/sustainability/TrustSection";
 
 export default function SustainabilityPage() {
+  const esgAvailable = isEsgReportAvailable();
+
   return (
     <div className="min-h-screen bg-white">
       {/* ── HEADER ──────────────────────────────────────────────────────────── */}
@@ -28,7 +36,9 @@ export default function SustainabilityPage() {
               We manufacture with what already exists.
             </h1>
             <p className="text-lg md:text-xl text-black/60 leading-relaxed max-w-2xl mx-auto">
-              We are on a journey. We aren&apos;t claiming perfection, but we are committed to transparent, measurable progress in reducing virgin plastic dependency and offsetting our manufacturing footprint.
+              We are on a journey — not claiming perfection. We are committed to transparent,
+              measurable progress in reducing virgin plastic dependency and offsetting our
+              manufacturing footprint.
             </p>
           </motion.div>
         </div>
@@ -41,7 +51,6 @@ export default function SustainabilityPage() {
             <ImpactCounter metric={SUSTAINABILITY_METRICS.recycledTonnes} />
           </div>
 
-          {/* Pending metrics grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <PendingMetricSlot metric={SUSTAINABILITY_METRICS.recycledFeedstock} />
             <PendingMetricSlot metric={SUSTAINABILITY_METRICS.treesPlanted} />
@@ -60,20 +69,34 @@ export default function SustainabilityPage() {
                 title={pillar.title}
                 description={pillar.description}
               >
-                {/* Specific pillar slots */}
                 {pillar.id === "recycled-materials" && (
                   <PendingMetricSlot metric={SUSTAINABILITY_METRICS.recycledFeedstock} />
                 )}
                 {pillar.id === "carbon-offset" && (
                   <div className="p-6 rounded-3xl bg-black/[0.03] border border-black/5 text-sm text-black/60">
-                    <p className="font-semibold text-black/80 mb-2">Programme details being documented</p>
-                    <p>Details of our regional tree planting initiative and verification body will be published here once fully established.</p>
+                    <p className="font-semibold text-black/80 mb-2">
+                      Programme details being documented
+                    </p>
+                    <p>
+                      Location, species, quantity planted, and verification body for our tree
+                      planting initiative will be published here once fully established.
+                    </p>
                   </div>
                 )}
                 {pillar.id === "manufacturing-practices" && (
-                  <div className="flex items-center gap-3">
-                    <span className="w-2 h-2 rounded-full bg-[#E67E22] animate-pulse" />
-                    <span className="text-sm font-semibold text-black/60">ISO 14001 certification in progress</span>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      <span className="w-2 h-2 rounded-full bg-[#108E2B]" />
+                      <span className="text-sm font-semibold text-black/60">
+                        Closed-loop scrap recycling in operation
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="w-2 h-2 rounded-full bg-[#E67E22] animate-pulse" />
+                      <span className="text-sm font-semibold text-black/60">
+                        ISO 14001 certification in progress
+                      </span>
+                    </div>
                   </div>
                 )}
               </SustainabilityPillar>
@@ -92,23 +115,43 @@ export default function SustainabilityPage() {
             ESG & Sustainability Data
           </h2>
           <p className="text-black/60 leading-relaxed mb-8">
-            Comprehensive documentation of our environmental impact, sourcing policies, and compliance standards for procurement teams.
+            Documentation of our environmental impact, sourcing policies, and compliance
+            standards for procurement teams.
           </p>
-          
+
           <div className="flex flex-col items-center gap-4">
-            <Button
-              size="lg"
-              disabled
-              className="h-14 px-8 text-base rounded-full bg-black/5 text-black/40 border-0 opacity-100 cursor-not-allowed"
-            >
-              Download 2026 ESG Report (PDF)
-            </Button>
-            <p className="text-sm text-black/40">
-              Report in preparation. Please <Link href="/contact?subject=esg" className="text-[#004C97] hover:underline">contact us</Link> for direct procurement enquiries.
-            </p>
+            {esgAvailable ? (
+              <a href={ESG_REPORT_PATH} download>
+                <Button
+                  size="lg"
+                  className="h-14 px-8 text-base rounded-full bg-[#108E2B] hover:bg-[#108E2B]/90 text-white border-0"
+                >
+                  Download ESG Data Sheet (PDF)
+                </Button>
+              </a>
+            ) : (
+              <>
+                <Button
+                  size="lg"
+                  disabled
+                  className="h-14 px-8 text-base rounded-full bg-black/5 text-black/40 border-0 opacity-100 cursor-not-allowed"
+                >
+                  Download ESG Data Sheet (PDF)
+                </Button>
+                <p className="text-sm text-black/40">
+                  Report in preparation — please{" "}
+                  <Link href="/contact?subject=esg" className="text-[#004C97] hover:underline">
+                    contact us
+                  </Link>{" "}
+                  for procurement enquiries.
+                </p>
+              </>
+            )}
           </div>
         </div>
       </section>
+
+      <TrustSection />
 
       {/* ── CTA ────────────────────────────────────────────────────────────── */}
       <section className="py-24 bg-[#0B1215] text-center px-6">
@@ -116,6 +159,10 @@ export default function SustainabilityPage() {
           <h2 className="text-4xl font-semibold tracking-tighter text-white mb-6">
             Partner with us for sustainable manufacturing
           </h2>
+          <p className="text-white/50 mb-8 leading-relaxed">
+            Need supplier environmental credentials for your procurement documentation? Our team
+            can provide verified data and product-level sustainability attributes.
+          </p>
           <Link href="/contact">
             <Button className="bg-[#108E2B] hover:bg-[#108E2B]/90 text-white border-0 rounded-full h-14 px-8 text-lg mt-4">
               Discuss Your Requirements <ArrowRight className="ml-2 w-5 h-5" />

@@ -8,6 +8,7 @@ import { ShoppingCart, FileText, ChevronRight, ChevronLeft, Package } from "@gei
 import { useCartStore } from "@/store/useCartStore";
 import { CATEGORIES, getSustainabilityBadges, type Product } from "@/data/products";
 import { SustainabilityBadge } from "@/components/sustainability/SustainabilityBadge";
+import { useMotionSafe } from "@/lib/motion";
 
 interface ProductCardProps {
   product: Product;
@@ -17,6 +18,7 @@ interface ProductCardProps {
 
 export function ProductCard({ product, index, showCTA = true }: ProductCardProps) {
   const { addToBuyNow, addToQuote, openDrawer } = useCartStore();
+  const { spring, hover, tap, reduced, viewport } = useMotionSafe();
   const [added, setAdded] = useState(false);
   const [currentImageIdx, setCurrentImageIdx] = useState(0);
 
@@ -58,11 +60,13 @@ export function ProductCard({ product, index, showCTA = true }: ProductCardProps
   return (
     <Link href={`/products/${product.id}`} className="block h-full">
       <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 12 }}
-        transition={{ duration: 0.35, delay: index * 0.05 }}
-        className="group flex flex-col h-full bg-white rounded-3xl border border-[#E5E5E5] overflow-hidden hover:shadow-2xl hover:shadow-black/8 hover:-translate-y-1 transition-all duration-300"
+        initial={reduced ? false : { opacity: 0, y: 10 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={viewport}
+        transition={{ ...spring, delay: reduced ? 0 : index * 0.06 }}
+        whileHover={hover}
+        whileTap={tap}
+        className="group flex h-full flex-col overflow-hidden rounded-3xl border border-[#E5E5E5] bg-white hover:shadow-xl hover:shadow-black/6"
       >
         {/* Image zone */}
         <div className="relative aspect-[4/3] bg-white overflow-hidden border-b border-[#F0F0EE]">
@@ -158,7 +162,7 @@ export function ProductCard({ product, index, showCTA = true }: ProductCardProps
           <h3 className="font-semibold text-[15px] leading-snug text-[#0B1215]">
             {product.name}
           </h3>
-          <p className="text-xs text-black/50 leading-relaxed line-clamp-2">
+          <p className="line-clamp-2 text-xs leading-relaxed text-black/60">
             {product.description}
           </p>
 
@@ -202,10 +206,13 @@ export function ProductCard({ product, index, showCTA = true }: ProductCardProps
             {showCTA && (
               <div className="flex items-center gap-2">
                 {!product.isEngineered && (
-                  <button
+                  <motion.button
                     onClick={product.inStock !== false ? handleAddBuyNow : undefined}
                     disabled={product.inStock === false}
-                    className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-2xl transition-all duration-200 whitespace-nowrap
+                    whileHover={tap ? { scale: 1.02 } : undefined}
+                    whileTap={tap}
+                    transition={spring}
+                    className={`flex items-center gap-1.5 whitespace-nowrap rounded-2xl px-3 py-2 text-xs font-semibold transition-colors duration-200
                       ${
                         added
                           ? "bg-[#108E2B] text-white scale-95"
@@ -215,15 +222,18 @@ export function ProductCard({ product, index, showCTA = true }: ProductCardProps
                       }`}
                   >
                     <ShoppingCart size={13} /> Order
-                  </button>
+                  </motion.button>
                 )}
                 
-                <button
+                <motion.button
                   onClick={handleAddQuote}
-                  className="flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-2xl transition-all duration-200 whitespace-nowrap bg-[#004C97]/10 text-[#004C97] hover:bg-[#004C97] hover:text-white"
+                  whileHover={tap ? { scale: 1.02 } : undefined}
+                  whileTap={tap}
+                  transition={spring}
+                  className="flex items-center gap-1.5 whitespace-nowrap rounded-2xl bg-[#004C97]/10 px-3 py-2 text-xs font-semibold text-[#004C97] transition-colors duration-200 hover:bg-[#004C97] hover:text-white"
                 >
                   <FileText size={13} /> Quote
-                </button>
+                </motion.button>
               </div>
             )}
           </div>

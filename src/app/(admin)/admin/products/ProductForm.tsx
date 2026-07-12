@@ -246,8 +246,9 @@ export default function ProductForm({ product }: { product?: Product }) {
             name="sustainabilityNotes"
             defaultValue={product?.sustainabilityNotes || ""}
             rows={2}
+            maxLength={200}
             className="w-full p-4 rounded-xl border border-[#E5E5E5] bg-[#F5F5F2] focus:outline-none focus:ring-2 focus:ring-[#004C97]/30 text-sm resize-none"
-            placeholder="Additional environmental credentials..."
+            placeholder="Additional environmental credentials (max 200 characters)..."
           />
         </div>
       </div>

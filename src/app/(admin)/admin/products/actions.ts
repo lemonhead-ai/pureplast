@@ -2,6 +2,40 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import type { MaterialGrade } from "@prisma/client";
+
+const VALID_GRADES = new Set<string>(["VIRGIN", "GR2", "GR3", "POST_CONSUMER", "MIXED"]);
+
+function parseSustainabilityFields(formData: FormData) {
+  const recycledContentPctStr = formData.get("recycledContentPct") as string;
+  let recycledContentPct: number | null = null;
+  if (recycledContentPctStr) {
+    recycledContentPct = parseInt(recycledContentPctStr, 10);
+    if (Number.isNaN(recycledContentPct) || recycledContentPct < 0 || recycledContentPct > 100) {
+      throw new Error("Recycled content must be between 0 and 100");
+    }
+  }
+
+  const materialGradeStr = formData.get("materialGrade") as string;
+  const materialGrade =
+    materialGradeStr && VALID_GRADES.has(materialGradeStr)
+      ? (materialGradeStr as MaterialGrade)
+      : null;
+
+  const carbonOffset = formData.get("carbonOffset") === "on";
+  const bpaFree = formData.get("bpaFree") === "on";
+  const foodSafe = formData.get("foodSafe") === "on";
+  const sustainabilityNotes = ((formData.get("sustainabilityNotes") as string) || "").trim() || null;
+
+  return {
+    recycledContentPct,
+    materialGrade,
+    carbonOffset,
+    bpaFree,
+    foodSafe,
+    sustainabilityNotes,
+  };
+}
 
 export async function createProduct(formData: FormData) {
   const name = formData.get("name") as string;
@@ -15,16 +49,7 @@ export async function createProduct(formData: FormData) {
   const active = formData.get("active") === "on";
   const imageUrl = (formData.get("imageUrl") as string) || null;
 
-  const recycledContentPctStr = formData.get("recycledContentPct") as string;
-  const recycledContentPct = recycledContentPctStr ? parseInt(recycledContentPctStr, 10) : null;
-  const materialGradeStr = formData.get("materialGrade") as string;
-  const materialGrade = materialGradeStr ? materialGradeStr as any : null;
-  const carbonOffset = formData.get("carbonOffset") === "on";
-  const bpaFree = formData.get("bpaFree") === "on";
-  const foodSafe = formData.get("foodSafe") === "on";
-  const sustainabilityNotes = (formData.get("sustainabilityNotes") as string) || null;
-  
-  // Basic slugification of name or sku
+  const sustainability = parseSustainabilityFields(formData);
   const slug = sku.toLowerCase().replace(/[^a-z0-9]+/g, "-");
 
   await prisma.product.create({
@@ -40,12 +65,7 @@ export async function createProduct(formData: FormData) {
       featured,
       active,
       imageUrl,
-      recycledContentPct,
-      materialGrade,
-      carbonOffset,
-      bpaFree,
-      foodSafe,
-      sustainabilityNotes,
+      ...sustainability,
     },
   });
 
@@ -66,14 +86,7 @@ export async function updateProduct(id: string, formData: FormData) {
   const active = formData.get("active") === "on";
   const imageUrl = (formData.get("imageUrl") as string) || null;
 
-  const recycledContentPctStr = formData.get("recycledContentPct") as string;
-  const recycledContentPct = recycledContentPctStr ? parseInt(recycledContentPctStr, 10) : null;
-  const materialGradeStr = formData.get("materialGrade") as string;
-  const materialGrade = materialGradeStr ? materialGradeStr as any : null;
-  const carbonOffset = formData.get("carbonOffset") === "on";
-  const bpaFree = formData.get("bpaFree") === "on";
-  const foodSafe = formData.get("foodSafe") === "on";
-  const sustainabilityNotes = (formData.get("sustainabilityNotes") as string) || null;
+  const sustainability = parseSustainabilityFields(formData);
 
   await prisma.product.update({
     where: { id },
@@ -88,12 +101,7 @@ export async function updateProduct(id: string, formData: FormData) {
       featured,
       active,
       imageUrl,
-      recycledContentPct,
-      materialGrade,
-      carbonOffset,
-      bpaFree,
-      foodSafe,
-      sustainabilityNotes,
+      ...sustainability,
     },
   });
 
@@ -104,8 +112,6 @@ export async function updateProduct(id: string, formData: FormData) {
 }
 
 export async function deleteProduct(id: string) {
-  // Instead of hard deleting, we'll just deactivate it
-  // Soft delete prevents orphaned order items
   await prisma.product.update({
     where: { id },
     data: { active: false },

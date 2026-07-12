@@ -1,46 +1,72 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "@geist-ui/icons";
 import { CATEGORIES, type Product } from "@/data/products";
-import { useCartStore } from "@/store/useCartStore";
 import { Button } from "@/components/ui/Button";
 import { ProductCard } from "@/components/ProductCard";
-import { SUSTAINABILITY_METRICS } from "@/data/sustainability";
-
-// ─── Stat strip ───────────────────────────────────────────────────────────────
+import {
+  fadeUp,
+  staggerContainer,
+  useMotionSafe,
+} from "@/lib/motion";
 
 const STATS = [
-  { value: SUSTAINABILITY_METRICS.recycledTonnes.value || "5,000", label: "Tonnes waste diverted" },
   { value: "30+", label: "Product lines" },
   { value: "6", label: "Categories" },
+  { value: "100%", label: "BPA-free materials" },
   { value: "24h", label: "Quote turnaround" },
 ];
 
-// ─── Category colour map (matches CATEGORIES data) ────────────────────────────
+const ENGINEERED_SPECS = [
+  { label: "Injection Moulding", detail: "Complex geometries, tight tolerances" },
+  { label: "Custom Colours", detail: "Pantone matched on request" },
+  { label: "Material Options", detail: "ABS, PP, HDPE, PET & more" },
+  { label: "Fast Turnaround", detail: "Quote within 24 hours" },
+];
 
-const CAT_COLORS: Record<string, string> = {
-  household: "#004C97",
-  kitchen: "#108E2B",
-  "laundry-storage": "#E67E22",
-  furniture: "#8E44AD",
-  "retail-hanging": "#C0392B",
-  engineered: "#0B1215",
-};
+function MotionLink({
+  href,
+  children,
+  className,
+}: {
+  href: string;
+  children: ReactNode;
+  className?: string;
+}) {
+  const { hover, tap, spring } = useMotionSafe();
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
+  return (
+    <Link href={href} className={className}>
+      <motion.span
+        className="inline-flex"
+        whileHover={hover}
+        whileTap={tap}
+        transition={spring}
+      >
+        {children}
+      </motion.span>
+    </Link>
+  );
+}
 
-export default function ClientHome({ featuredProducts, categoryCounts }: { featuredProducts: Product[], categoryCounts: Record<string, number> }) {
-  const { addToBuyNow, addToQuote, openDrawer } = useCartStore();
+export default function ClientHome({
+  featuredProducts,
+  categoryCounts,
+}: {
+  featuredProducts: Product[];
+  categoryCounts: Record<string, number>;
+}) {
+  const motionSafe = useMotionSafe();
 
   return (
     <div className="flex flex-col">
 
       {/* ── HERO ──────────────────────────────────────────────────────────────── */}
-      <section className="relative h-[92vh] cmin-h-[640px] flex items-center justify-center overflow-hidden">
-        {/* Background image */}
+      <section className="relative flex min-h-[640px] h-[92vh] items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <Image
             src="/images/heropage.png"
@@ -49,260 +75,281 @@ export default function ClientHome({ featuredProducts, categoryCounts }: { featu
             className="object-cover"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/70 to-white/10" />
+          <div className="absolute inset-0 bg-gradient-to-r from-white/97 via-white/75 to-white/20" />
         </div>
 
-        <div className="relative z-10 max-w-7xl mx-auto px-6 w-full">
+        <div className="relative z-10 mx-auto w-full max-w-7xl px-6">
           <motion.div
-            initial={{ opacity: 0, y: 32 }}
+            initial={motionSafe.reduced ? false : { opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
+            transition={motionSafe.entranceSpring}
             className="max-w-2xl"
           >
-            {/* Status badge */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.15 }}
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/70 backdrop-blur-md border border-[#E5E5E5] mb-7 text-sm font-medium text-[#0B1215]"
+              initial={motionSafe.reduced ? false : { opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ ...motionSafe.entranceSpring, delay: motionSafe.reduced ? 0 : 0.05 }}
+              className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#E5E5E5] bg-white/80 px-3.5 py-1.5 text-sm font-medium text-[#0B1215] backdrop-blur-md"
             >
-              <span className="w-2 h-2 rounded-full bg-[#108E2B] animate-pulse" />
+              <span className="h-2 w-2 animate-pulse rounded-full bg-[#108E2B]" aria-hidden />
               Engineered for Africa. Built to last.
             </motion.div>
 
-            <h1 className="text-6xl md:text-7xl font-semibold tracking-tighter leading-[1.05] mb-6 text-balance">
-              Industrial<br />
+            <motion.h1
+              initial={motionSafe.reduced ? false : { opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ ...motionSafe.entranceSpring, delay: motionSafe.reduced ? 0 : 0.1 }}
+              className="mb-5 text-balance text-5xl font-semibold leading-[1.05] tracking-tighter text-[#0B1215] sm:text-6xl md:text-7xl"
+            >
+              Industrial
+              <br />
               Precision{" "}
-              <span className="text-[#004C97]">Plastic</span><br />
+              <span className="text-[#004C97]">Plastic</span>
+              <br />
               Solutions
-            </h1>
+            </motion.h1>
 
-            <p className="text-lg text-black/65 mb-10 max-w-xl leading-relaxed">
-              From everyday household items to custom-engineered components — PurePlast manufactures high-quality plastic products trusted across Kenya and beyond.
-            </p>
+            <motion.p
+              initial={motionSafe.reduced ? false : { opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ ...motionSafe.entranceSpring, delay: motionSafe.reduced ? 0 : 0.15 }}
+              className="mb-9 max-w-xl text-lg leading-relaxed text-black/70"
+            >
+              From everyday household items to custom-engineered components — PurePlast
+              manufactures high-quality plastic products trusted across Kenya and beyond.
+            </motion.p>
 
-            <div className="flex flex-wrap gap-4">
-              <Link href="/products">
+            <motion.div
+              initial={motionSafe.reduced ? false : { opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ ...motionSafe.entranceSpring, delay: motionSafe.reduced ? 0 : 0.2 }}
+              className="flex flex-wrap gap-3"
+            >
+              <MotionLink href="/products">
                 <Button
                   size="lg"
-                  className="h-13 px-8 text-base rounded-full bg-[#004C97] hover:bg-[#004C97]/90 text-white border-0"
+                  className="h-12 rounded-full border-0 bg-[#004C97] px-8 text-base text-white hover:bg-[#004C97]/90"
                 >
-                  Browse Catalog <ArrowRight className="ml-2 w-5 h-5" />
+                  Browse Catalog <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
-              </Link>
-              <Link href="/contact">
+              </MotionLink>
+              <MotionLink href="/contact">
                 <Button
                   size="lg"
                   variant="outline"
-                  className="h-13 px-8 text-base rounded-full bg-white/60 backdrop-blur-md border-black/15 hover:bg-white text-[#0B1215]"
+                  className="h-12 rounded-full border-black/20 bg-white/70 px-8 text-base text-[#0B1215] backdrop-blur-md hover:bg-white"
                 >
                   Request Custom Quote
                 </Button>
-              </Link>
-              <Link href="/sustainability">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="h-13 px-8 text-base rounded-full bg-[#108E2B]/10 backdrop-blur-md border-[#108E2B]/20 hover:bg-[#108E2B]/20 text-[#108E2B]"
-                >
-                  Our Sustainability Journey
-                </Button>
-              </Link>
-            </div>
+              </MotionLink>
+            </motion.div>
           </motion.div>
         </div>
 
-        {/* Scrolling stats strip pinned at bottom */}
-        <div className="absolute bottom-0 left-0 right-0 z-10 bg-white/80 backdrop-blur-md border-t border-[#E5E5E5]">
-          <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-start md:justify-center gap-8 md:gap-16 overflow-x-auto">
-            {STATS.map((s) => (
-              <div key={s.label} className="flex items-center gap-2 flex-shrink-0">
-                <span className={`text-xl font-bold ${s.label.includes('diverted') ? 'text-[#108E2B]' : 'text-[#004C97]'}`}>{s.value}</span>
-                <span className="text-sm text-black/50 font-medium">{s.label}</span>
-              </div>
+        <motion.div
+          initial={motionSafe.reduced ? false : { opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ ...motionSafe.entranceSpring, delay: motionSafe.reduced ? 0 : 0.28 }}
+          className="absolute bottom-0 left-0 right-0 z-10 border-t border-[#E5E5E5] bg-white/90 backdrop-blur-md"
+        >
+          <div className="mx-auto flex h-16 max-w-7xl items-center justify-start gap-10 overflow-x-auto px-6 md:justify-center md:gap-16">
+            {STATS.map((s, i) => (
+              <motion.div
+                key={s.label}
+                initial={motionSafe.reduced ? false : { opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  ...motionSafe.spring,
+                  delay: motionSafe.reduced ? 0 : 0.32 + i * 0.04,
+                }}
+                className="flex shrink-0 items-center gap-2.5"
+              >
+                <span className="text-xl font-bold tabular-nums text-[#004C97]">{s.value}</span>
+                <span className="text-sm font-medium text-black/60">{s.label}</span>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+      </section>
+
+      {/* ── CAPABILITIES ──────────────────────────────────────────────────────── */}
+      <section className="border-b border-[#E5E5E5] bg-white py-20 md:py-28">
+        <div className="mx-auto max-w-7xl px-6">
+          <motion.div
+            initial={motionSafe.reduced ? false : "hidden"}
+            whileInView="visible"
+            viewport={motionSafe.viewport}
+            variants={fadeUp}
+            transition={motionSafe.entranceSpring}
+            className="mb-12 md:mb-16"
+          >
+            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.15em] text-[#004C97]">
+              Capabilities
+            </p>
+            <h2 className="text-3xl font-semibold tracking-tighter text-[#0B1215] md:text-4xl">
+              What we manufacture
+            </h2>
+            <p className="mt-3 max-w-2xl text-base leading-relaxed text-black/60">
+              Six specialised product families — from stock items to made-to-order parts.
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={motionSafe.reduced ? false : "hidden"}
+            whileInView="visible"
+            viewport={motionSafe.viewport}
+            variants={staggerContainer(0.07)}
+            className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4"
+          >
+            {CATEGORIES.map((cat) => {
+              const count = categoryCounts[cat.id] || 0;
+
+              return (
+                <motion.div
+                  key={cat.id}
+                  variants={fadeUp}
+                  transition={motionSafe.spring}
+                  whileHover={motionSafe.hover}
+                  whileTap={motionSafe.tap}
+                  className="h-full"
+                >
+                  <Link
+                    href={`/products?category=${cat.id}`}
+                    className="group relative flex h-full cursor-pointer flex-col overflow-hidden rounded-3xl border border-[#E5E5E5] bg-white p-5 md:p-6"
+                  >
+                    <div
+                      className="absolute right-0 top-0 h-24 w-24 rounded-bl-[60px] opacity-[0.08] transition-opacity duration-200 group-hover:opacity-[0.14]"
+                      style={{ background: cat.accentColor }}
+                      aria-hidden
+                    />
+
+                    <div
+                      className="mb-4 flex h-10 w-10 items-center justify-center rounded-2xl"
+                      style={{
+                        background: `${cat.accentColor}15`,
+                        color: cat.accentColor,
+                      }}
+                    >
+                      <ArrowRight size={18} />
+                    </div>
+
+                    <h3 className="mb-1 text-base font-bold text-[#0B1215]">{cat.label}</h3>
+                    <p className="mb-4 flex-1 text-xs leading-relaxed text-black/60">
+                      {cat.tagline}
+                    </p>
+                    <span
+                      className="text-xs font-bold"
+                      style={{ color: cat.accentColor }}
+                    >
+                      {count} product{count !== 1 ? "s" : ""} →
+                    </span>
+                  </Link>
+                </motion.div>
+              );
+            })}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── FEATURED PRODUCTS ─────────────────────────────────────────────────── */}
+      <section className="bg-[#FAFAF8] py-20 md:py-28">
+        <div className="mx-auto max-w-7xl px-6">
+          <motion.div
+            initial={motionSafe.reduced ? false : "hidden"}
+            whileInView="visible"
+            viewport={motionSafe.viewport}
+            variants={fadeUp}
+            transition={motionSafe.entranceSpring}
+            className="mb-12 flex flex-col justify-between gap-6 md:mb-16 md:flex-row md:items-end"
+          >
+            <div>
+              <p className="mb-2 text-xs font-semibold uppercase tracking-[0.15em] text-[#004C97]">
+                Handpicked
+              </p>
+              <h2 className="text-3xl font-semibold tracking-tighter text-[#0B1215] md:text-4xl">
+                Featured Products
+              </h2>
+            </div>
+            <MotionLink href="/products">
+              <Button
+                variant="outline"
+                className="rounded-full border-black/15 hover:bg-[#0B1215] hover:text-white"
+              >
+                View full catalog <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </MotionLink>
+          </motion.div>
+
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
+            {featuredProducts.slice(0, 6).map((product, i) => (
+              <ProductCard key={product.id} product={product} index={i} showCTA={false} />
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── SUSTAINABILITY TEASER ───────────────────────────────────────────── */}
-      <section className="py-12 bg-[#FAFAF8] border-b border-[#E5E5E5]">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-4">
-            <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[#108E2B]/10 text-[#108E2B]">
-              <span className="text-xl font-bold">↻</span>
-            </div>
-            <div>
-              <p className="text-sm font-semibold tracking-[0.15em] uppercase text-[#108E2B] mb-1">Our Commitment</p>
-              <p className="text-[#0B1215] font-medium">We manufacture using recycled post-consumer waste wherever possible.</p>
-            </div>
-          </div>
-          <Link href="/sustainability" className="text-sm font-bold text-[#004C97] hover:underline flex items-center gap-1">
-            Read our narrative <ArrowRight size={16} />
-          </Link>
-        </div>
-      </section>
-
-      {/* ── CAPABILITIES ──────────────────────────────────────────────────────── */}
-      <section className="py-24 bg-white border-b border-[#E5E5E5]">
-        <div className="max-w-7xl mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="mb-14"
-          >
-            <h2 className="text-3xl font-semibold tracking-tighter text-[#0B1215]">
-              What we manufacture
-            </h2>
-            <p className="text-black/50 mt-2">
-              Six specialised product families curated with expertise from stock items to made-to-order parts.
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {CATEGORIES.map((cat, i) => {
-              const count = categoryCounts[cat.id] || 0;
-              return (
-                <motion.div
-                  key={cat.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.07 }}
-                >
-                  <Link href={`/products?category=${cat.id}`}>
-                    <div className="group relative p-6 rounded-3xl border border-[#E5E5E5] bg-white hover:border-transparent hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden cursor-pointer h-full">
-                      {/* Colour swatch top-right */}
-                      <div
-                        className="absolute top-0 right-0 w-24 h-24 rounded-bl-[60px] opacity-8 transition-opacity group-hover:opacity-12"
-                        style={{ background: cat.accentColor }}
-                      />
-
-                      <div
-                        className="w-10 h-10 rounded-2xl flex items-center justify-center mb-4"
-                        style={{
-                          background: `${cat.accentColor}15`,
-                          color: cat.accentColor,
-                        }}
-                      >
-                        <ArrowRight size={18} />
-                      </div>
-
-                      <h3 className="font-bold text-base text-[#0B1215] mb-1">
-                        {cat.label}
-                      </h3>
-                      <p className="text-xs text-black/45 leading-relaxed mb-3">
-                        {cat.tagline}
-                      </p>
-                      <span
-                        className="text-xs font-bold"
-                        style={{ color: cat.accentColor }}
-                      >
-                        {count} product{count !== 1 ? "s" : ""} →
-                      </span>
-                    </div>
-                  </Link>
-                </motion.div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* ── FEATURED PRODUCTS ─────────────────────────────────────────────────── */}
-      <section className="py-28 bg-[#FAFAF8]">
-        <div className="max-w-7xl mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-14"
-          >
-            <div>
-              <p className="text-xs font-semibold tracking-[0.15em] uppercase text-[#004C97] mb-2">
-                Handpicked
-              </p>
-              <h2 className="text-3xl font-semibold tracking-tighter text-[#0B1215]">
-                Featured Products
-              </h2>
-            </div>
-            <Link href="/products">
-              <Button
-                variant="outline"
-                className="border-black/15 rounded-full hover:bg-black hover:text-white transition-all"
-              >
-                View full catalog <ArrowRight className="ml-2 w-4 h-4" />
-              </Button>
-            </Link>
-          </motion.div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {featuredProducts.slice(0, 6).map((product, i) => {
-              return <ProductCard key={product.id} product={product} index={i} showCTA={false} />;
-            })}
-          </div>
-        </div>
-      </section>
-
       {/* ── ENGINEERED PARTS CTA ──────────────────────────────────────────────── */}
-      <section className="py-24 bg-[#0B1215]">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+      <section className="bg-[#0B1215] py-20 md:py-28">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="grid grid-cols-1 items-center gap-12 md:grid-cols-2 md:gap-16">
             <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
+              initial={motionSafe.reduced ? false : { opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={motionSafe.viewport}
+              transition={motionSafe.entranceSpring}
             >
-              <div className="flex items-center gap-2 mb-4">
-                <span className="w-2 h-2 rounded-full bg-[#108E2B] animate-pulse" />
-                <span className="text-xs font-semibold tracking-[0.15em] uppercase text-white/40">
+              <div className="mb-5 flex items-center gap-2">
+                <span className="h-2 w-2 animate-pulse rounded-full bg-[#108E2B]" aria-hidden />
+                <span className="text-xs font-semibold uppercase tracking-[0.15em] text-white/70">
                   Custom Engineering
                 </span>
               </div>
-              <h2 className="text-4xl font-semibold tracking-tighter text-white mb-5">
-                Need a part built<br />to specification?
+              <h2 className="mb-5 text-3xl font-semibold tracking-tighter text-white md:text-4xl">
+                Need a part built
+                <br />
+                to specification?
               </h2>
-              <p className="text-white/50 leading-relaxed mb-8 max-w-md">
-                Our injection-moulding and thermoforming capabilities cover housings, clips, trays, agricultural components, and more. Share your CAD file or a sketch — we&apos;ll handle the rest.
+              <p className="mb-8 max-w-md text-base leading-relaxed text-white/70">
+                Our injection-moulding and thermoforming capabilities cover housings, clips,
+                trays, agricultural components, and more. Share your CAD file or a sketch — we&apos;ll
+                handle the rest.
               </p>
-              <div className="flex gap-4">
-                <Link href="/products?category=engineered">
-                  <Button className="bg-[#108E2B] hover:bg-[#108E2B]/90 text-white border-0 rounded-full h-12 px-7">
+              <div className="flex flex-wrap gap-3">
+                <MotionLink href="/products?category=engineered">
+                  <Button className="h-12 rounded-full border-0 bg-[#108E2B] px-7 text-white hover:bg-[#108E2B]/90">
                     See Engineered Parts
                   </Button>
-                </Link>
-                <Link href="/contact">
+                </MotionLink>
+                <MotionLink href="/contact">
                   <Button
                     variant="outline"
-                    className="border-white/20 text-white hover:bg-white/10 rounded-full h-12 px-7 bg-transparent"
+                    className="h-12 rounded-full border-white/25 bg-transparent px-7 text-white hover:bg-white/10"
                   >
                     Contact Us
                   </Button>
-                </Link>
+                </MotionLink>
               </div>
             </motion.div>
 
-            {/* Right — spec list */}
             <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="grid grid-cols-2 gap-4"
+              initial={motionSafe.reduced ? false : "hidden"}
+              whileInView="visible"
+              viewport={motionSafe.viewport}
+              variants={staggerContainer(0.06, 0.08)}
+              className="grid grid-cols-2 gap-3 md:gap-4"
             >
-              {[
-                { label: "Injection Moulding", detail: "Complex geometries, tight tolerances" },
-                { label: "Custom Colours", detail: "Pantone matched on request" },
-                { label: "Material Options", detail: "ABS, PP, HDPE, PET & more" },
-                { label: "Fast Turnaround", detail: "Quote within 24 hours" },
-              ].map((item) => (
-                <div
+              {ENGINEERED_SPECS.map((item) => (
+                <motion.div
                   key={item.label}
-                  className="p-5 rounded-3xl border border-white/10 bg-white/5"
+                  variants={fadeUp}
+                  transition={motionSafe.spring}
+                  whileHover={motionSafe.hover}
+                  whileTap={motionSafe.tap}
+                  className="rounded-3xl border border-white/12 bg-white/[0.06] p-5"
                 >
-                  <h4 className="font-bold text-sm text-white mb-1">{item.label}</h4>
-                  <p className="text-xs text-white/40 leading-relaxed">{item.detail}</p>
-                </div>
+                  <h4 className="mb-1.5 text-sm font-bold text-white">{item.label}</h4>
+                  <p className="text-xs leading-relaxed text-white/65">{item.detail}</p>
+                </motion.div>
               ))}
             </motion.div>
           </div>
@@ -310,4 +357,4 @@ export default function ClientHome({ featuredProducts, categoryCounts }: { featu
       </section>
     </div>
   );
-  }
+}

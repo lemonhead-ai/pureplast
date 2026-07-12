@@ -41,3 +41,7 @@ yarn-error.log*
 next-env.d.ts
 
 /src/generated/prisma
+
+# Ignore AI Assistant skill files
+.cursor/
+design-system/  # Only add this if you don't want to sync your custom MASTER.md design files

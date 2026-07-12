@@ -7,7 +7,7 @@ import Link from "next/link";
 import { ArrowRight, ChevronRight, Package, ShoppingCart, FileText } from "@geist-ui/icons";
 import { useCartStore } from "@/store/useCartStore";
 import { Button } from "@/components/ui/Button";
-import { CATEGORIES, getSustainabilityBadges, type Product } from "@/data/products";
+import { CATEGORIES, getSustainabilityBadges, getMaterialGradeLabel, hasSustainabilityData, type Product } from "@/data/products";
 import { SustainabilityBadge } from "@/components/sustainability/SustainabilityBadge";
 
 function RelatedProducts({ current, related }: { current: Product; related: Product[] }) {
@@ -216,31 +216,61 @@ export default function ClientProductDetail({ product, relatedProducts }: { prod
             </div>
 
             {/* Environmental Credentials */}
-            {(() => {
-              const badges = getSustainabilityBadges(product);
-              if (badges.length === 0 && !product.sustainabilityNotes) return null;
-
-              return (
-                <div className="p-6 rounded-2xl bg-[#FAFAF8] border border-[#108E2B]/10">
-                  <h4 className="text-sm font-bold uppercase tracking-widest text-[#108E2B] mb-4 flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-[#108E2B]" />
-                    Environmental Credentials
-                  </h4>
-                  {badges.length > 0 && (
+            {hasSustainabilityData(product) && (
+              <div className="p-6 rounded-2xl bg-[#FAFAF8] border border-[#108E2B]/10">
+                <h4 className="text-sm font-bold uppercase tracking-widest text-[#108E2B] mb-4 flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-[#108E2B]" />
+                  Environmental Credentials
+                </h4>
+                {(() => {
+                  const badges = getSustainabilityBadges(product);
+                  return badges.length > 0 ? (
                     <div className="flex flex-wrap items-center gap-2 mb-4">
                       {badges.map((badge, i) => (
                         <SustainabilityBadge key={i} label={badge} icon={true} />
                       ))}
                     </div>
+                  ) : null;
+                })()}
+                <ul className="space-y-2 text-sm text-black/60 mb-4">
+                  {product.materialGrade && (
+                    <li>
+                      <span className="font-semibold text-black/80">Material grade: </span>
+                      {getMaterialGradeLabel(product.materialGrade)}
+                    </li>
                   )}
-                  {product.sustainabilityNotes && (
-                    <div className="text-sm text-black/60 leading-relaxed bg-white p-4 rounded-xl border border-[#E5E5E5]">
-                      {product.sustainabilityNotes}
-                    </div>
+                  {product.recycledContentPct != null && product.recycledContentPct > 0 && (
+                    <li>
+                      <span className="font-semibold text-black/80">Recycled content: </span>
+                      {product.recycledContentPct}% post-consumer
+                    </li>
                   )}
-                </div>
-              );
-            })()}
+                  {product.carbonOffset && (
+                    <li>
+                      <span className="font-semibold text-black/80">Production: </span>
+                      Carbon offset applied
+                    </li>
+                  )}
+                  {product.bpaFree && (
+                    <li>
+                      <span className="font-semibold text-black/80">Safety: </span>
+                      BPA-free
+                    </li>
+                  )}
+                  {product.foodSafe && (
+                    <li>
+                      <span className="font-semibold text-black/80">Compliance: </span>
+                      Food-safe materials
+                    </li>
+                  )}
+                </ul>
+                {product.sustainabilityNotes && (
+                  <div className="text-sm text-black/60 leading-relaxed bg-white p-4 rounded-xl border border-[#E5E5E5]">
+                    {product.sustainabilityNotes}
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Price */}
             <div className="py-6 border-t border-b border-[#E5E5E5]">

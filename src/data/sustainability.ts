@@ -2,11 +2,31 @@ export type MetricStatus = "verified" | "pending";
 
 export interface ImpactMetric {
   label: string;
-  value?: string;       // only when verified
+  value?: string;
   unit?: string;
   status: MetricStatus;
-  collectionNote?: string; // shown to admins / internal, not as fake data
+  collectionNote?: string;
 }
+
+export interface Certification {
+  label: string;
+  sub: string;
+  status: "verified" | "in_progress" | "target";
+}
+
+export interface TeamMember {
+  name?: string;
+  role: string;
+  status: "verified" | "pending";
+}
+
+export interface ClientLogo {
+  name: string;
+  imageUrl: string;
+}
+
+/** Path under public/ when the ESG PDF is ready — do not create a placeholder file. */
+export const ESG_REPORT_PATH = "/documents/pureplast-esg-report.pdf";
 
 export const SUSTAINABILITY_METRICS: Record<string, ImpactMetric> = {
   recycledTonnes: {
@@ -40,24 +60,71 @@ export const DATA_COLLECTION_CHECKLIST = [
   "ESG data sheet PDF for procurement",
   "Team photos and names for About section",
   "Client logos (with permission)",
-  "Per-product recycled % for catalog backfill"
+  "Per-product recycled % for catalog backfill",
 ];
 
-// Content for the Three Pillars
 export const SUSTAINABILITY_PILLARS = [
   {
     id: "recycled-materials",
     title: "Recycled Materials",
-    description: "We are committed to increasing our use of post-consumer and industrial recycled plastics. By reintroducing waste streams into our manufacturing process, we reduce the demand for virgin feedstock without compromising structural integrity or performance."
+    description:
+      "We source post-consumer and industrial recycled plastics where material performance allows. Recycled feedstock reduces virgin polymer demand without compromising structural integrity on approved product lines.",
   },
   {
     id: "carbon-offset",
     title: "Carbon Offset",
-    description: "Our operations are continuously evaluated for energy efficiency. We are establishing verifiable carbon offset programmes, including regional tree planting initiatives, to balance the carbon footprint of our unavoidable energy consumption."
+    description:
+      "We are building verifiable offset programmes — including regional tree planting — to balance the footprint of energy we cannot yet eliminate from our manufacturing process.",
   },
   {
     id: "manufacturing-practices",
     title: "Manufacturing Practices",
-    description: "We operate a modern facility focused on reducing waste at the source. Our current state includes full closed-loop recycling of our own manufacturing scrap, alongside a roadmap to achieve internationally recognised environmental management standards."
-  }
+    description:
+      "Our Kitengela facility recycles manufacturing scrap in closed loops where feasible. We use virgin polymer where specifications require it — particularly on engineered lines — and we are working toward internationally recognised environmental management standards.",
+  },
 ];
+
+export const VERIFIED_CERTIFICATIONS: Certification[] = [
+  { label: "KEBS Certified", sub: "Kenya Bureau of Standards", status: "verified" },
+  { label: "BPA-Free Production", sub: "Consumer product lines — see product credentials", status: "verified" },
+  { label: "Food-Safe Materials", sub: "Kitchen lines — available on request for engineered parts", status: "verified" },
+];
+
+export const TARGET_CERTIFICATIONS: Certification[] = [
+  { label: "ISO 14001", sub: "Environmental management — target certification", status: "target" },
+  { label: "Recycled Content Standards", sub: "Third-party verification of feedstock claims", status: "in_progress" },
+];
+
+export const TEAM_MEMBERS: TeamMember[] = [
+  { role: "Operations Lead", status: "pending" },
+  { role: "Production Manager", status: "pending" },
+  { role: "Quality & Compliance", status: "pending" },
+];
+
+export const CLIENT_LOGOS: ClientLogo[] = [];
+
+export const SUSTAINABILITY_STORY = {
+  headline: "Why sustainability matters to PurePlast",
+  body: [
+    "PurePlast was built in Kitengela because manufacturing should happen close to the markets it serves — not because sustainability was an afterthought.",
+    "Plastic waste is a visible problem across East Africa. We chose to make recycled feedstock a core input where material performance allows, because diverting waste from landfill is an operational decision — not a marketing line.",
+    "We still run standard injection moulding and use virgin polymer where specifications require it. We are on a journey toward fuller sustainability, and we publish only what we can verify.",
+  ],
+};
+
+export function getVerifiedTonnesDisplay(): string {
+  const metric = SUSTAINABILITY_METRICS.recycledTonnes;
+  if (metric.status !== "verified" || !metric.value) return "";
+  return `${metric.value} ${metric.unit ?? "tonnes"}`;
+}
+
+export function getFooterSustainabilityStat(): string {
+  const metric = SUSTAINABILITY_METRICS.recycledTonnes;
+  if (metric.status !== "verified" || !metric.value) return "";
+  return `${metric.value} ${metric.unit ?? "tonnes"} plastic waste diverted`;
+}
+
+export function isEsgReportAvailable(): boolean {
+  // Flip to true once the PDF is placed at public/documents/pureplast-esg-report.pdf
+  return false;
+}

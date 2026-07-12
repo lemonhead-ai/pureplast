@@ -317,14 +317,95 @@ export function getCategoryCount(category: ProductCategory): number {
   return PRODUCTS.filter((p) => p.category === category).length;
 }
 
-export function getSustainabilityBadges(product: Product | any): string[] {
+const MATERIAL_GRADE_LABELS: Record<NonNullable<Product["materialGrade"]>, string> = {
+  VIRGIN: "Virgin polymer",
+  GR2: "GR2 grade",
+  GR3: "GR3 grade",
+  POST_CONSUMER: "Post-consumer recycled",
+  MIXED: "Mixed feedstock",
+};
+
+export function getMaterialGradeLabel(grade?: Product["materialGrade"]): string | null {
+  if (!grade) return null;
+  return MATERIAL_GRADE_LABELS[grade] ?? grade.replace("_", " ");
+}
+
+export function getSustainabilityBadges(product: Product): string[] {
   const badges: string[] = [];
-  if (product.recycledContentPct) badges.push(`${product.recycledContentPct}% recycled`);
+  if (product.recycledContentPct != null && product.recycledContentPct > 0) {
+    badges.push(`${product.recycledContentPct}% recycled`);
+  }
   if (product.carbonOffset) badges.push("Carbon offset");
   if (product.bpaFree) badges.push("BPA-free");
   if (product.foodSafe) badges.push("Food safe");
-  if (product.materialGrade && product.materialGrade !== "VIRGIN") {
-    badges.push(product.materialGrade.replace("_", " "));
+  const gradeLabel = getMaterialGradeLabel(product.materialGrade);
+  if (gradeLabel && product.materialGrade !== "VIRGIN") {
+    badges.push(gradeLabel);
   }
   return badges;
+}
+
+export function hasSustainabilityData(product: Product): boolean {
+  return (
+    getSustainabilityBadges(product).length > 0 ||
+    !!product.sustainabilityNotes ||
+    !!product.materialGrade
+  );
+}
+
+export function mapDbProduct(p: {
+  id: string;
+  name: string;
+  description: string | null;
+  price: number;
+  imageUrl: string | null;
+  category: string;
+  sku: string;
+  featured: boolean;
+  unit: string | null;
+  stockQuantity: number;
+  recycledContentPct?: number | null;
+  materialGrade?: Product["materialGrade"] | null;
+  carbonOffset?: boolean;
+  bpaFree?: boolean | null;
+  foodSafe?: boolean | null;
+  sustainabilityNotes?: string | null;
+  images?: { sortOrder: number; imageUrl: string }[];
+}): Product {
+  const sortedImages = (p.images ?? [])
+    .sort((a, b) => a.sortOrder - b.sortOrder)
+    .map((img) => img.imageUrl);
+
+  const allImages =
+    sortedImages.length > 0 ? sortedImages : p.imageUrl ? [p.imageUrl] : [];
+
+  return {
+    id: p.id,
+    name: p.name,
+    description: p.description || "",
+    price: p.price,
+    image: p.imageUrl || "",
+    images: allImages,
+    isEngineered: p.category === "engineered",
+    category: p.category as ProductCategory,
+    sku: p.sku,
+    featured: p.featured,
+    unit: p.unit || undefined,
+    inStock: p.category === "engineered" ? true : p.stockQuantity >= 0,
+    recycledContentPct: p.recycledContentPct ?? undefined,
+    materialGrade: p.materialGrade ?? undefined,
+    carbonOffset: p.carbonOffset ?? false,
+    bpaFree: p.bpaFree ?? undefined,
+    foodSafe: p.foodSafe ?? undefined,
+    sustainabilityNotes: p.sustainabilityNotes ?? undefined,
+  };
+}
+
+/** Infer material grade from product name for seed backfill only. */
+export function inferMaterialGradeFromName(name: string): Product["materialGrade"] | undefined {
+  const upper = name.toUpperCase();
+  if (upper.includes("VIRGIN")) return "VIRGIN";
+  if (upper.includes("GR2")) return "GR2";
+  if (upper.includes("GR3")) return "GR3";
+  return undefined;
 }
