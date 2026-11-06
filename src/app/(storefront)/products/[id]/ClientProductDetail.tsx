@@ -7,8 +7,7 @@ import Link from "next/link";
 import { ArrowRight, ChevronRight, Package, ShoppingCart, FileText } from "@geist-ui/icons";
 import { useCartStore } from "@/store/useCartStore";
 import { Button } from "@/components/ui/Button";
-import { CATEGORIES, getSustainabilityBadges, getMaterialGradeLabel, hasSustainabilityData, type Product } from "@/data/products";
-import { SustainabilityBadge } from "@/components/sustainability/SustainabilityBadge";
+import { CATEGORIES, getMaterialGradeLabel, type Product } from "@/data/products";
 
 function RelatedProducts({ current, related }: { current: Product; related: Product[] }) {
   if (related.length === 0) return null;
@@ -66,6 +65,7 @@ export default function ClientProductDetail({ product, relatedProducts }: { prod
   const category = CATEGORIES.find((c) => c.id === product.category);
   const { addToBuyNow, addToQuote, openDrawer } = useCartStore();
   const [added, setAdded] = useState(false);
+  const [bundleQuantity, setBundleQuantity] = useState(1);
   const [currentImageIdx, setCurrentImageIdx] = useState(0);
 
   const hasMultipleImages = product.images && product.images.length > 1;
@@ -75,10 +75,10 @@ export default function ClientProductDetail({ product, relatedProducts }: { prod
     if (!product) return;
     
     if (product.isEngineered) {
-      addToQuote(product);
+      addToQuote(product, bundleQuantity);
       openDrawer("quote");
     } else {
-      addToBuyNow(product);
+      addToBuyNow(product, bundleQuantity);
       openDrawer("buy");
     }
     setAdded(true);
@@ -215,59 +215,36 @@ export default function ClientProductDetail({ product, relatedProducts }: { prod
               </span>
             </div>
 
-            {/* Environmental Credentials */}
-            {hasSustainabilityData(product) && (
-              <div className="p-6 rounded-2xl bg-[#FAFAF8] border border-[#108E2B]/10">
-                <h4 className="text-sm font-bold uppercase tracking-widest text-[#108E2B] mb-4 flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-[#108E2B]" />
-                  Environmental Credentials
+            {/* Specifications */}
+            {(product.materialGrade || (product.recycledContentPct != null && product.recycledContentPct > 0)) && (
+              <div className="p-5 rounded-2xl bg-[#FAFAF8] border border-[#E5E5E5]">
+                <h4 className="text-xs font-bold uppercase tracking-widest text-[#0B1215] mb-3">
+                  Specifications
                 </h4>
-                {(() => {
-                  const badges = getSustainabilityBadges(product);
-                  return badges.length > 0 ? (
-                    <div className="flex flex-wrap items-center gap-2 mb-4">
-                      {badges.map((badge, i) => (
-                        <SustainabilityBadge key={i} label={badge} icon={true} />
-                      ))}
-                    </div>
-                  ) : null;
-                })()}
-                <ul className="space-y-2 text-sm text-black/60 mb-4">
+                <ul className="space-y-1.5 text-sm text-black/70">
                   {product.materialGrade && (
                     <li>
-                      <span className="font-semibold text-black/80">Material grade: </span>
+                      <span className="font-medium text-black/90">Material grade: </span>
                       {getMaterialGradeLabel(product.materialGrade)}
                     </li>
                   )}
                   {product.recycledContentPct != null && product.recycledContentPct > 0 && (
                     <li>
-                      <span className="font-semibold text-black/80">Recycled content: </span>
+                      <span className="font-medium text-black/90">Recycled content: </span>
                       {product.recycledContentPct}% post-consumer
-                    </li>
-                  )}
-                  {product.carbonOffset && (
-                    <li>
-                      <span className="font-semibold text-black/80">Production: </span>
-                      Carbon offset applied
-                    </li>
-                  )}
-                  {product.bpaFree && (
-                    <li>
-                      <span className="font-semibold text-black/80">Safety: </span>
-                      BPA-free
                     </li>
                   )}
                   {product.foodSafe && (
                     <li>
-                      <span className="font-semibold text-black/80">Compliance: </span>
-                      Food-safe materials
+                      <span className="font-medium text-black/90">Grade: </span>
+                      Food-safe compliant
                     </li>
                   )}
                 </ul>
                 {product.sustainabilityNotes && (
-                  <div className="text-sm text-black/60 leading-relaxed bg-white p-4 rounded-xl border border-[#E5E5E5]">
+                  <p className="text-xs text-black/60 leading-relaxed mt-3 pt-3 border-t border-[#E5E5E5]">
                     {product.sustainabilityNotes}
-                  </div>
+                  </p>
                 )}
               </div>
             )}
@@ -276,17 +253,22 @@ export default function ClientProductDetail({ product, relatedProducts }: { prod
             <div className="py-6 border-t border-b border-[#E5E5E5]">
               {product.price ? (
                 <div>
-                  <p className="text-4xl md:text-5xl font-bold text-[#0B1215]">
-                    KES {product.price.toLocaleString()}
-                  </p>
+                  <div className="flex items-baseline gap-3 flex-wrap">
+                    <p className="text-4xl md:text-5xl font-bold text-[#0B1215]">
+                      KES {(product.price * bundleQuantity).toLocaleString()}
+                    </p>
+                    {bundleQuantity > 1 && (
+                      <span className="text-sm font-medium text-black/50">
+                        (KES {product.price.toLocaleString()} / bundle)
+                      </span>
+                    )}
+                  </div>
                   {product.unit && (
-                    <p className="text-base text-black/40 mt-2">{product.unit}</p>
+                    <p className="text-sm text-[#004C97] font-semibold mt-2">{product.unit}</p>
                   )}
-                  <div className="mt-4 p-4 rounded-2xl bg-amber-50 border border-amber-100">
-                    <p className="text-sm text-amber-700 font-medium leading-relaxed">
-                      <strong>Minimum order quantities apply.</strong> PurePlast
-                      supplies businesses and wholesalers. Products are sold in
-                      bundle quantities — contact us for bulk pricing details.
+                  <div className="mt-4 p-4 rounded-2xl bg-blue-50/60 border border-blue-100">
+                    <p className="text-xs text-[#004C97] font-medium leading-relaxed">
+                      <strong>Factory Wholesale Pricing.</strong> Products are sold strictly in manufacturer bundles ({product.unit || "bulk packaging"}).
                     </p>
                   </div>
                 </div>
@@ -299,6 +281,46 @@ export default function ClientProductDetail({ product, relatedProducts }: { prod
                 </div>
               )}
             </div>
+
+            {/* Quantity Selector for Bundles */}
+            {!product.isEngineered && (
+              <div className="py-4 border-b border-[#E5E5E5] flex items-center justify-between">
+                <div>
+                  <span className="block text-sm font-semibold text-[#0B1215]">
+                    Order Quantity
+                  </span>
+                  <span className="text-xs text-black/50">
+                    {product.unit || "Sold in bundles"}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="inline-flex items-center border border-[#E5E5E5] rounded-xl bg-white shadow-xs">
+                    <button
+                      type="button"
+                      onClick={() => setBundleQuantity(Math.max(1, bundleQuantity - 1))}
+                      className="w-10 h-10 flex items-center justify-center text-black/70 hover:text-black hover:bg-black/5 rounded-l-xl transition-colors font-bold text-base"
+                      aria-label="Decrease bundle quantity"
+                    >
+                      −
+                    </button>
+                    <span className="w-12 text-center text-sm font-bold tabular-nums">
+                      {bundleQuantity}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setBundleQuantity(bundleQuantity + 1)}
+                      className="w-10 h-10 flex items-center justify-center text-black/70 hover:text-black hover:bg-black/5 rounded-r-xl transition-colors font-bold text-base"
+                      aria-label="Increase bundle quantity"
+                    >
+                      +
+                    </button>
+                  </div>
+                  <span className="text-xs font-medium text-black/60">
+                    {bundleQuantity === 1 ? "bundle" : "bundles"}
+                  </span>
+                </div>
+              </div>
+            )}
 
             {/* CTA buttons */}
             <div className="flex flex-col sm:flex-row gap-3">
@@ -345,7 +367,7 @@ export default function ClientProductDetail({ product, relatedProducts }: { prod
                     ) : (
                       <>
                         <ShoppingCart size={18} className="mr-2" />
-                        Add to Bulk Order
+                        Order {bundleQuantity} {bundleQuantity === 1 ? "Bundle" : "Bundles"}
                       </>
                     )}
                   </Button>

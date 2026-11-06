@@ -51,40 +51,23 @@ export function Navbar() {
     return () => { document.body.style.overflow = ""; };
   }, [mobileOpen]);
 
-  const progress = Math.min(scrollY / 80, 1);
-  const blur = 8 + progress * 12;
-  const bgOpacity = mobileOpen ? 0.95 : progress * 0.8;
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
-  const totalItems =
-    buyNowCart.reduce((acc, item) => acc + item.quantity, 0) +
-    quoteCart.reduce((acc, item) => acc + item.quantity, 0);
+  const totalItems = mounted
+    ? buyNowCart.reduce((acc, item) => acc + item.quantity, 0) +
+      quoteCart.reduce((acc, item) => acc + item.quantity, 0)
+    : 0;
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-30">
-        {/* Dynamic blur layer */}
-        <div
-          className="absolute inset-0 pointer-events-none transition-all duration-200"
-          style={{
-            backdropFilter: `blur(${blur}px)`,
-            WebkitBackdropFilter: `blur(${blur}px)`,
-            backgroundColor: `rgba(255,255,255,${bgOpacity})`,
-            maskImage: "linear-gradient(to bottom, black 25%, black 45%, transparent)",
-            WebkitMaskImage: "linear-gradient(to bottom, black 30%, black 40%, transparent)",
-          }}
-        />
-
-        {/* Border fade */}
-        <div
-          className="absolute bottom-0 left-0 right-0 h-px transition-opacity duration-200"
-          style={{
-            opacity: progress,
-            background: "linear-gradient(to right, transparent, rgba(0,0,0,0, transparent)",
-          }}
-        />
-
+      <nav
+        className={`fixed top-0 left-0 right-0 z-30 bg-white/75 backdrop-blur-md border-b border-[#E5E5E5]/70 transition-all duration-200 ${
+          scrollY > 10 ? "bg-white/90 backdrop-blur-lg shadow-xs" : ""
+        }`}
+      >
         {/* Content row */}
-        <div className="relative max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+        <div className="relative max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2" onClick={() => setMobileOpen(false)}>
             <Image
@@ -98,7 +81,7 @@ export function Navbar() {
           </Link>
 
           {/* Desktop nav */}
-          <div className="hidden lg:flex items-center gap-8 text-lg font-medium tracking-normal">
+          <div className="hidden lg:flex items-center gap-6 text-md font-medium tracking-normal">
             {NAV_LINKS.map(({ href, label }) => {
               const active = isActive(href);
               return (
@@ -180,7 +163,7 @@ export function Navbar() {
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-              className="md:hidden overflow-hidden relative bg-white/95 backdrop-blur-xl border-t border-black/5"
+              className="md:hidden overflow-hidden relative bg-white border-t border-[#E5E5E5]"
             >
               <nav className="flex flex-col px-6 py-6 gap-1">
                 {NAV_LINKS.map(({ href, label }, i) => {

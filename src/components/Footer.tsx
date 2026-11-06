@@ -1,10 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
-import { SustainabilityBadge } from "@/components/sustainability/SustainabilityBadge";
-import { getFooterSustainabilityStat, isEsgReportAvailable, ESG_REPORT_PATH } from "@/data/sustainability";
+import { isEsgReportAvailable, ESG_REPORT_PATH } from "@/data/sustainability";
 
 export function Footer() {
-  const footerStat = getFooterSustainabilityStat();
   const esgAvailable = isEsgReportAvailable();
 
   return (
@@ -62,14 +60,8 @@ export function Footer() {
           </ul>
         </div>
       </div>
-      
-      {footerStat && (
-        <div className="max-w-7xl mx-auto px-6 mt-16 pt-8 border-t border-[#E5E5E5]">
-          <SustainabilityBadge label={footerStat} />
-        </div>
-      )}
 
-      <div className="max-w-7xl mx-auto px-6 pt-4 mt-4 border-t border-[#E5E5E5] text-md opacity-40 flex flex-col md:flex-row justify-between items-center">
+      <div className="max-w-7xl mx-auto px-6 pt-8 mt-12 border-t border-[#E5E5E5] text-md opacity-40 flex flex-col md:flex-row justify-between items-center">
         <p>&copy; {new Date().getFullYear()} PurePlast. All rights reserved.</p>
         <div className="flex space-x-4 text-md mt-4 md:mt-0">
           <Link href="https://martinmwai.vercel.app">About Developer</Link>

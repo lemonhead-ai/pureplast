@@ -60,10 +60,6 @@ export async function processCheckout(
     const product = products.find((p) => p.id === cartItem.id);
     if (!product) continue;
 
-    if (product.stockQuantity < cartItem.quantity) {
-      throw new Error(`Not enough stock for ${product.name}`);
-    }
-
     subtotal += product.price * cartItem.quantity;
     orderItemsData.push({
       productId: product.id,

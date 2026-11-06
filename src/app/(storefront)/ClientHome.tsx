@@ -17,7 +17,7 @@ import {
 const STATS = [
   { value: "30+", label: "Product lines" },
   { value: "6", label: "Categories" },
-  { value: "100%", label: "BPA-free materials" },
+  { value: "100%", label: "Locally manufactured" },
   { value: "24h", label: "Quote turnaround" },
 ];
 
@@ -66,7 +66,7 @@ export default function ClientHome({
     <div className="flex flex-col">
 
       {/* ── HERO ──────────────────────────────────────────────────────────────── */}
-      <section className="relative flex min-h-[640px] h-[92vh] items-center justify-center overflow-hidden">
+      <section className="relative -mt-16 flex h-screen min-h-[640px] items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <Image
             src="/images/heropage.png"
@@ -75,26 +75,16 @@ export default function ClientHome({
             className="object-cover"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-white/97 via-white/75 to-white/20" />
+          <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/80 to-white/25" />
         </div>
 
-        <div className="relative z-10 mx-auto w-full max-w-7xl px-6">
+        <div className="relative z-10 mx-auto w-full max-w-7xl px-6 pt-16">
           <motion.div
             initial={motionSafe.reduced ? false : { opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={motionSafe.entranceSpring}
             className="max-w-2xl"
           >
-            <motion.div
-              initial={motionSafe.reduced ? false : { opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ ...motionSafe.entranceSpring, delay: motionSafe.reduced ? 0 : 0.05 }}
-              className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#E5E5E5] bg-white/80 px-3.5 py-1.5 text-sm font-medium text-[#0B1215] backdrop-blur-md"
-            >
-              <span className="h-2 w-2 animate-pulse rounded-full bg-[#108E2B]" aria-hidden />
-              Engineered for Africa. Built to last.
-            </motion.div>
-
             <motion.h1
               initial={motionSafe.reduced ? false : { opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}

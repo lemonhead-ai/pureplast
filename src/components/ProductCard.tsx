@@ -6,8 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ShoppingCart, FileText, ChevronRight, ChevronLeft, Package } from "@geist-ui/icons";
 import { useCartStore } from "@/store/useCartStore";
-import { CATEGORIES, getSustainabilityBadges, type Product } from "@/data/products";
-import { SustainabilityBadge } from "@/components/sustainability/SustainabilityBadge";
+import { CATEGORIES, type Product } from "@/data/products";
 import { useMotionSafe } from "@/lib/motion";
 
 interface ProductCardProps {
@@ -166,39 +165,30 @@ export function ProductCard({ product, index, showCTA = true }: ProductCardProps
             {product.description}
           </p>
 
-          {/* Sustainability Badges */}
-          {(() => {
-            const badges = getSustainabilityBadges(product);
-            if (badges.length === 0) return null;
-            const displayBadges = badges.slice(0, 2);
-            const extra = badges.length - 2;
-            return (
-              <div className="flex flex-wrap items-center gap-1.5 mt-1">
-                {displayBadges.map((badge, i) => (
-                  <SustainabilityBadge key={i} label={badge} icon={i === 0} className="scale-90 origin-left" />
-                ))}
-                {extra > 0 && (
-                  <span className="text-[10px] font-semibold text-[#108E2B] bg-[#108E2B]/10 px-1.5 py-0.5 rounded-md">
-                    +{extra}
-                  </span>
-                )}
-              </div>
-            );
-          })()}
-
           <div className={`mt-auto pt-3 ${showCTA ? "border-t border-[#F0F0EE] flex items-center justify-between gap-3" : ""}`}>
-            {/* Status & Unit */}
+            {/* Status & Unit & Price */}
             <div>
               {!product.isEngineered ? (
-                <>
-                  {product.unit && (
+                <div>
+                  {product.price && product.price > 0 ? (
+                    <>
+                      <p className="text-sm font-bold text-[#0B1215]">
+                        KES {product.price.toLocaleString()}
+                      </p>
+                      {product.unit && (
+                        <p className="text-[11px] font-medium text-[#004C97] mt-0.5">
+                          {product.unit}
+                        </p>
+                      )}
+                    </>
+                  ) : product.unit ? (
                     <p className="text-xs font-medium text-black/70">
                       {product.unit}
                     </p>
-                  )}
-                </>
+                  ) : null}
+                </div>
               ) : (
-                <p className="text-sm font-regular text-red-500">Quote Required</p>
+                <p className="text-xs font-semibold text-red-500">Quote Required</p>
               )}
             </div>
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCartStore } from "@/store/useCartStore";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
@@ -10,20 +10,35 @@ import { processCheckout } from "./actions";
 export default function CheckoutPage() {
   const router = useRouter();
   const buyNowCart = useCartStore((state) => state.buyNowCart);
+  const updateBuyNowQuantity = useCartStore((state) => state.updateBuyNowQuantity);
+  const removeFromBuyNow = useCartStore((state) => state.removeFromBuyNow);
   
+  const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<"mpesa" | "bank">("mpesa");
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   // Calculate totals
   const subtotal = buyNowCart.reduce((sum, item) => sum + (item.price || 0) * item.quantity, 0);
-  const shipping = 500; // Flat rate for now
+  const shipping = 500; // Flat rate
   const total = subtotal + shipping;
+
+  if (!mounted) {
+    return (
+      <main className="min-h-screen pt-32 pb-24 px-6 md:px-12 bg-[#F5F5F2] flex items-center justify-center">
+        <p className="text-black/40 text-sm">Loading checkout...</p>
+      </main>
+    );
+  }
 
   if (buyNowCart.length === 0) {
     return (
       <div className="min-h-screen pt-32 pb-24 px-6 md:px-12 flex flex-col items-center justify-center bg-[#F5F5F2]">
         <h1 className="text-3xl font-semibold text-[#0B1215] mb-4">Your Cart is Empty</h1>
-        <p className="text-black/60 mb-8">Add some products to your cart to proceed to checkout.</p>
+        <p className="text-black/60 mb-8">Add items from the catalog to proceed to checkout.</p>
         <Button onClick={() => router.push("/products")}>Browse Products</Button>
       </div>
     );
@@ -135,7 +150,7 @@ export default function CheckoutPage() {
               
               <div className="space-y-4 mb-6">
                 {buyNowCart.map((item) => (
-                  <div key={item.id} className="flex gap-4">
+                  <div key={item.id} className="flex gap-4 items-start pb-4 border-b border-[#E5E5E5]/60 last:border-0 last:pb-0">
                     <div className="w-16 h-16 rounded-xl overflow-hidden bg-[#F5F5F2] flex-shrink-0">
                       {item.image ? (
                         <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
@@ -143,30 +158,91 @@ export default function CheckoutPage() {
                         <div className="w-full h-full flex items-center justify-center text-xs text-black/30">No Image</div>
                       )}
                     </div>
-                    <div className="flex-1">
+                    <div className="flex-1 min-w-0">
                       <h3 className="text-sm font-semibold text-[#0B1215] leading-tight line-clamp-2">{item.name}</h3>
-                      <p className="text-xs text-black/50 mt-1">Qty: {item.quantity}</p>
+                      {item.unit && (
+                        <p className="text-xs text-[#004C97] font-medium mt-0.5">{item.unit}</p>
+                      )}
+                      
+                      {/* Bundle quantity controls */}
+                      <div className="flex items-center gap-2 mt-2">
+                        <div className="inline-flex items-center border border-[#E5E5E5] rounded-lg bg-[#F5F5F2]">
+                          <button
+                            type="button"
+                            onClick={() => updateBuyNowQuantity(item.id, item.quantity - 1)}
+                            className="w-6 h-6 flex items-center justify-center text-black/70 hover:text-black hover:bg-black/5 rounded-l-lg transition-colors font-bold text-xs"
+                            aria-label="Decrease quantity"
+                          >
+                            −
+                          </button>
+                          <span className="w-7 text-center text-xs font-semibold tabular-nums">
+                            {item.quantity}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => updateBuyNowQuantity(item.id, item.quantity + 1)}
+                            className="w-6 h-6 flex items-center justify-center text-black/70 hover:text-black hover:bg-black/5 rounded-r-lg transition-colors font-bold text-xs"
+                            aria-label="Increase quantity"
+                          >
+                            +
+                          </button>
+                        </div>
+                        <span className="text-[11px] text-black/50 font-medium">
+                          {item.quantity === 1 ? "bundle" : "bundles"}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => removeFromBuyNow(item.id)}
+                          className="ml-auto text-[11px] text-red-500 hover:underline"
+                        >
+                          Remove
+                        </button>
+                      </div>
                     </div>
-                    <div className="text-sm font-semibold text-[#0B1215]">
-                      KES {(item.price || 0) * item.quantity}
+                    <div className="text-right shrink-0">
+                      {item.price && item.price > 0 ? (
+                        <>
+                          <div className="text-sm font-semibold text-[#0B1215]">
+                            KES {(item.price * item.quantity).toLocaleString()}
+                          </div>
+                          {item.quantity > 1 && (
+                            <span className="text-[10px] text-black/40 block mt-0.5">
+                              KES {item.price.toLocaleString()} / bundle
+                            </span>
+                          )}
+                        </>
+                      ) : (
+                        <span className="text-xs text-amber-600 font-medium">Quote Required</span>
+                      )}
                     </div>
                   </div>
                 ))}
               </div>
 
               <div className="border-t border-[#E5E5E5] pt-4 space-y-3 mb-6">
-                <div className="flex justify-between text-sm">
-                  <span className="text-black/60">Subtotal</span>
-                  <span className="font-semibold text-[#0B1215]">KES {subtotal.toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-black/60">Shipping</span>
-                  <span className="font-semibold text-[#0B1215]">KES {shipping.toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between text-lg pt-2 border-t border-[#E5E5E5]">
-                  <span className="font-semibold text-[#0B1215]">Total</span>
-                  <span className="font-bold text-[#0B1215]">KES {total.toLocaleString()}</span>
-                </div>
+                {subtotal > 0 ? (
+                  <>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-black/60">Subtotal</span>
+                      <span className="font-semibold text-[#0B1215]">KES {subtotal.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-black/60">Shipping</span>
+                      <span className="font-semibold text-[#0B1215]">KES {shipping.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between text-lg pt-2 border-t border-[#E5E5E5]">
+                      <span className="font-semibold text-[#0B1215]">Total</span>
+                      <span className="font-bold text-[#0B1215]">KES {total.toLocaleString()}</span>
+                    </div>
+                  </>
+                ) : (
+                  <p className="text-xs text-black/60 font-medium">
+                    Order submitted for factory invoice and payment processing.
+                  </p>
+                )}
+                <p className="text-[11px] text-black/45 leading-tight pt-1">
+                  All items are supplied in factory bundle packaging.
+                </p>
               </div>
 
               <Button 
@@ -175,7 +251,7 @@ export default function CheckoutPage() {
                 disabled={loading}
                 className="w-full py-6 text-lg shadow-xl shadow-[#004C97]/20"
               >
-                {loading ? "Processing..." : `Pay KES ${total.toLocaleString()}`}
+                {loading ? "Processing..." : subtotal > 0 ? `Pay KES ${total.toLocaleString()}` : "Submit Factory Order"}
               </Button>
             </div>
           </div>
