@@ -2,7 +2,7 @@ import 'dotenv/config';
 import { Pool } from 'pg';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '@prisma/client';
-import { PRODUCTS, inferMaterialGradeFromName } from '../src/data/products';
+import { PRODUCTS } from '../src/data/products';
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 const adapter = new PrismaPg(pool);
@@ -12,20 +12,16 @@ async function main() {
   console.log('Start seeding...');
 
   for (const product of PRODUCTS) {
-    const materialGrade =
-      product.materialGrade ?? inferMaterialGradeFromName(product.name) ?? null;
-
     const p = await prisma.product.upsert({
       where: { sku: product.sku },
       update: {
+        name: product.name,
+        description: product.description,
+        category: product.category,
         featured: product.featured || false,
         unit: product.unit || null,
-        materialGrade,
-        recycledContentPct: product.recycledContentPct ?? null,
-        carbonOffset: product.carbonOffset ?? false,
-        bpaFree: product.bpaFree ?? null,
-        foodSafe: product.foodSafe ?? null,
-        sustainabilityNotes: product.sustainabilityNotes ?? null,
+        materialGrade: product.materialGrade || null,
+        sustainabilityNotes: product.sustainabilityNotes || null,
       },
       create: {
         id: product.id,
@@ -39,15 +35,11 @@ async function main() {
         featured: product.featured || false,
         unit: product.unit || null,
         active: true,
-        materialGrade,
-        recycledContentPct: product.recycledContentPct ?? null,
-        carbonOffset: product.carbonOffset ?? false,
-        bpaFree: product.bpaFree ?? null,
-        foodSafe: product.foodSafe ?? null,
-        sustainabilityNotes: product.sustainabilityNotes ?? null,
+        materialGrade: product.materialGrade || null,
+        sustainabilityNotes: product.sustainabilityNotes || null,
       },
     });
-    console.log(`Created product with sku: ${p.sku}`);
+    console.log(`Created/updated product with sku: ${p.sku}`);
 
     if (product.images && product.images.length > 0) {
       for (let i = 0; i < product.images.length; i++) {

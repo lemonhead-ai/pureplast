@@ -25,13 +25,11 @@ export async function processQuoteRequest(formData: FormData, quoteItems: CartPr
         update: {
           fullName,
           phone: phone || null,
-          companyName,
         },
         create: {
           email,
           fullName,
           phone: phone || null,
-          companyName,
         },
       });
 

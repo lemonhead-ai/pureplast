@@ -8,6 +8,7 @@ import { ArrowRight } from "@geist-ui/icons";
 import { CATEGORIES, type Product } from "@/data/products";
 import { Button } from "@/components/ui/Button";
 import { ProductCard } from "@/components/ProductCard";
+import { SITE_CONFIG } from "@/config/site";
 import {
   fadeUp,
   staggerContainer,
@@ -15,17 +16,17 @@ import {
 } from "@/lib/motion";
 
 const STATS = [
-  { value: "30+", label: "Product lines" },
-  { value: "6", label: "Categories" },
-  { value: "100%", label: "Locally manufactured" },
-  { value: "24h", label: "Quote turnaround" },
+  { value: "21", label: "Catalogued products" },
+  { value: "6", label: "Product categories" },
+  { value: "Kitengela", label: "Manufactured locally" },
+  { value: SITE_CONFIG.standards.quoteTurnaroundShort, label: "Quote turnaround" },
 ];
 
 const ENGINEERED_SPECS = [
-  { label: "Injection Moulding", detail: "Complex geometries, tight tolerances" },
-  { label: "Custom Colours", detail: "Pantone matched on request" },
-  { label: "Material Options", detail: "ABS, PP, HDPE, PET & more" },
-  { label: "Fast Turnaround", detail: "Quote within 24 hours" },
+  { label: "Injection Moulding", detail: "Complex geometries, precision tolerances" },
+  { label: "Custom Colours", detail: "Pantone matched masterbatch on request" },
+  { label: "Material Options", detail: "PP, HDPE, LDPE, ABS & recycled grades" },
+  { label: "Fast Turnaround", detail: `Technical quote within ${SITE_CONFIG.standards.quoteTurnaround}` },
 ];
 
 function MotionLink({
@@ -65,20 +66,21 @@ export default function ClientHome({
   return (
     <div className="flex flex-col">
 
-      {/* ── HERO ──────────────────────────────────────────────────────────────── */}
-      <section className="relative -mt-16 flex h-screen min-h-[640px] items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="/images/heropage.png"
-            alt="PurePlast Manufacturing Facility"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/80 to-white/25" />
-        </div>
+      {/* ── FIXED HERO BACKGROUND IMAGE (Stays stationary as hero content scrolls) ── */}
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        <Image
+          src="/images/heropage.png"
+          alt="PurePlast Manufacturing Facility Kitengela"
+          fill
+          className="object-cover"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/80 to-white/25" />
+      </div>
 
-        <div className="relative z-10 mx-auto w-full max-w-7xl px-6 pt-16">
+      {/* ── HERO CONTENT (Scrolls naturally over the stationary background) ──────── */}
+      <section className="relative z-10 -mt-16 flex h-screen min-h-[640px] flex-col justify-between">
+        <div className="mx-auto w-full max-w-7xl px-6 my-auto pt-16">
           <motion.div
             initial={motionSafe.reduced ? false : { opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -105,8 +107,8 @@ export default function ClientHome({
               transition={{ ...motionSafe.entranceSpring, delay: motionSafe.reduced ? 0 : 0.15 }}
               className="mb-9 max-w-xl text-lg leading-relaxed text-black/70"
             >
-              From everyday household items to custom-engineered components — PurePlast
-              manufactures high-quality plastic products trusted across Kenya and beyond.
+              From everyday household items to custom injection-moulded components — PurePlast
+              manufactures high-quality polymer products in Kitengela for clients across East Africa.
             </motion.p>
 
             <motion.div
@@ -118,18 +120,18 @@ export default function ClientHome({
               <MotionLink href="/products">
                 <Button
                   size="lg"
-                  className="h-12 rounded-full border-0 bg-[#004C97] px-8 text-base text-white hover:bg-[#004C97]/90"
+                  className="h-12 rounded-full border-0 bg-[#004C97] px-8 text-base text-white hover:bg-[#004C97]/90 font-semibold"
                 >
-                  Browse Catalog <ArrowRight className="ml-2 h-5 w-5" />
+                  Browse Catalogue <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </MotionLink>
-              <MotionLink href="/contact">
+              <MotionLink href="/contact?type=custom-engineering">
                 <Button
                   size="lg"
                   variant="outline"
-                  className="h-12 rounded-full border-black/20 bg-white/70 px-8 text-base text-[#0B1215] backdrop-blur-md hover:bg-white"
+                  className="h-12 rounded-full border-black/20 bg-white/70 px-8 text-base text-[#0B1215] backdrop-blur-md hover:bg-white font-semibold"
                 >
-                  Request Custom Quote
+                  Request Engineering Quote
                 </Button>
               </MotionLink>
             </motion.div>
@@ -140,7 +142,7 @@ export default function ClientHome({
           initial={motionSafe.reduced ? false : { opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ ...motionSafe.entranceSpring, delay: motionSafe.reduced ? 0 : 0.28 }}
-          className="absolute bottom-0 left-0 right-0 z-10 border-t border-[#E5E5E5] bg-white/90 backdrop-blur-md"
+          className="border-t border-[#E5E5E5] bg-white/90 backdrop-blur-md"
         >
           <div className="mx-auto flex h-16 max-w-7xl items-center justify-start gap-10 overflow-x-auto px-6 md:justify-center md:gap-16">
             {STATS.map((s, i) => (
@@ -162,8 +164,10 @@ export default function ClientHome({
         </motion.div>
       </section>
 
-      {/* ── CAPABILITIES ──────────────────────────────────────────────────────── */}
-      <section className="border-b border-[#E5E5E5] bg-white py-20 md:py-28">
+      {/* ── OVERLAYING CONTENT (Curtain Sheet over Sticky Hero) ───────────────── */}
+      <div className="relative z-10 bg-white rounded-t-[32px] md:rounded-t-[48px] shadow-[0_-20px_60px_-15px_rgba(0,0,0,0.14)] border-t border-[#E5E5E5] overflow-hidden">
+        {/* ── CAPABILITIES ──────────────────────────────────────────────────────── */}
+        <section className="border-b border-[#E5E5E5] bg-white py-20 md:py-28">
         <div className="mx-auto max-w-7xl px-6">
           <motion.div
             initial={motionSafe.reduced ? false : "hidden"}
@@ -180,7 +184,7 @@ export default function ClientHome({
               What we manufacture
             </h2>
             <p className="mt-3 max-w-2xl text-base leading-relaxed text-black/60">
-              Six specialised product families — from stock items to made-to-order parts.
+              Specialised product families produced to industrial specifications — from stock bundles to custom-engineered parts.
             </p>
           </motion.div>
 
@@ -193,6 +197,7 @@ export default function ClientHome({
           >
             {CATEGORIES.map((cat) => {
               const count = categoryCounts[cat.id] || 0;
+              const isComingSoon = cat.isComingSoon || count === 0;
 
               return (
                 <motion.div
@@ -223,15 +228,24 @@ export default function ClientHome({
                       <ArrowRight size={18} />
                     </div>
 
-                    <h3 className="mb-1 text-base font-bold text-[#0B1215]">{cat.label}</h3>
+                    <div className="flex items-center gap-2 mb-1">
+                      <h3 className="text-base font-bold text-[#0B1215]">{cat.label}</h3>
+                      {isComingSoon && (
+                        <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-black/5 text-black/50">
+                          Coming soon
+                        </span>
+                      )}
+                    </div>
+                    
                     <p className="mb-4 flex-1 text-xs leading-relaxed text-black/60">
                       {cat.tagline}
                     </p>
+                    
                     <span
                       className="text-xs font-bold"
                       style={{ color: cat.accentColor }}
                     >
-                      {count} product{count !== 1 ? "s" : ""} →
+                      {isComingSoon ? "Soon →" : `${count} product${count !== 1 ? "s" : ""} →`}
                     </span>
                   </Link>
                 </motion.div>
@@ -254,7 +268,7 @@ export default function ClientHome({
           >
             <div>
               <p className="mb-2 text-xs font-semibold uppercase tracking-[0.15em] text-[#004C97]">
-                Handpicked
+                Selected Lines
               </p>
               <h2 className="text-3xl font-semibold tracking-tighter text-[#0B1215] md:text-4xl">
                 Featured Products
@@ -265,14 +279,14 @@ export default function ClientHome({
                 variant="outline"
                 className="rounded-full border-black/15 hover:bg-[#0B1215] hover:text-white"
               >
-                View full catalog <ArrowRight className="ml-2 h-4 w-4" />
+                View full catalogue <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </MotionLink>
           </motion.div>
 
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
             {featuredProducts.slice(0, 6).map((product, i) => (
-              <ProductCard key={product.id} product={product} index={i} showCTA={false} />
+              <ProductCard key={product.id} product={product} index={i} showCTA={true} />
             ))}
           </div>
         </div>
@@ -295,14 +309,13 @@ export default function ClientHome({
                 </span>
               </div>
               <h2 className="mb-5 text-3xl font-semibold tracking-tighter text-white md:text-4xl">
-                Need a part built
+                Need a component built
                 <br />
                 to specification?
               </h2>
               <p className="mb-8 max-w-md text-base leading-relaxed text-white/70">
-                Our injection-moulding and thermoforming capabilities cover housings, clips,
-                trays, agricultural components, and more. Share your CAD file or a sketch — we&apos;ll
-                handle the rest.
+                Our injection-moulding and precision tooling capabilities cover housings, fasteners,
+                trays, and agricultural components. Share your CAD file (STEP, STL) or drawings for a technical review.
               </p>
               <div className="flex flex-wrap gap-3">
                 <MotionLink href="/products?category=engineered">
@@ -310,12 +323,12 @@ export default function ClientHome({
                     See Engineered Parts
                   </Button>
                 </MotionLink>
-                <MotionLink href="/contact">
+                <MotionLink href="/contact?type=custom-engineering">
                   <Button
                     variant="outline"
                     className="h-12 rounded-full border-white/25 bg-transparent px-7 text-white hover:bg-white/10"
                   >
-                    Contact Us
+                    Request Technical Quote
                   </Button>
                 </MotionLink>
               </div>
@@ -345,6 +358,7 @@ export default function ClientHome({
           </div>
         </div>
       </section>
+      </div>
     </div>
   );
 }

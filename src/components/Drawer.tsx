@@ -150,7 +150,7 @@ export function Drawer() {
                             )}
                           </div>
                         ) : (
-                          <p className="text-xs text-red-500 font-medium mt-2">Quote Required</p>
+                          <p className="text-xs text-black/60 font-medium mt-2">Wholesale Quote Schedule</p>
                         )}
                       </div>
                       <button 

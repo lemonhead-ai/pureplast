@@ -12,9 +12,8 @@ import { Button } from "./ui/Button";
 const NAV_LINKS = [
   { href: "/", label: "Home" },
   { href: "/products", label: "Products" },
-  {href: "/3Dprinting", label: "3D Printing" },
   { href: "/about", label: "About Us" },
-  { href: "/partners", label: "Our Partners" },
+  { href: "/partners", label: "Work With Us" },
   { href: "/sustainability", label: "Sustainability" },
   { href: "/contact", label: "Contact Us" },
 ];

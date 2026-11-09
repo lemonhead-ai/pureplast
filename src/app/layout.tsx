@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Montserrat } from "next/font/google";
+import { Montserrat, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import { Drawer } from "@/components/Drawer";
@@ -9,6 +9,18 @@ import { Toaster } from "sonner";
 const montserrat = Montserrat({
   subsets: ["latin"],
   variable: "--font-montserrat",
+  display: "swap",
+});
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
   display: "swap",
 });
 
@@ -23,7 +35,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`h-full antialiased ${montserrat.variable}`}>
+    <html
+      lang="en"
+      className={`h-full antialiased ${inter.variable} ${montserrat.variable} ${jetbrainsMono.variable}`}
+    >
       <body className="font-sans">
         {children}
         <Toaster position="top-right" richColors />
